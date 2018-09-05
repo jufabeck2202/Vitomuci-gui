@@ -9,7 +9,7 @@
 
 <script>
   export default {
-     mounted () {
+    mounted () {
       this.$nextTick(() => {
         this.$el.addEventListener('drop', this.onDrop)
         this.$el.addEventListener('dragover', this.onDragover)
@@ -21,20 +21,23 @@
       this.$el.removeEventListener('dragover', this.onDragover)
       this.$el.removeEventListener('dragleave', this.onDragleave)
     },
+    props: {
+      dropFiles: Function
+    },
     methods: {
-      onDrop(e) {
+      onDrop (e) {
         const files = e.dataTransfer.files
         const videos = []
-        console.log(files)
+        this.dropFiles(files)
       },
-      onDragover() {
+      onDragover () {
         this.dragging = true
       },
-      onDragleave() {
+      onDragleave () {
         this.dragging = false
       }
     }
-  };
+  }
 </script>
 
 <style scoped>

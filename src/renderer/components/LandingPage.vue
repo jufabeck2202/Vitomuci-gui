@@ -28,31 +28,60 @@
           </span>
         </label>
       </div>
-      <div><file-dropdown></file-dropdown></div>
-      
+      <p class="h4 text-center mb-4">Sign in</p>
+      <label for="defaultFormLoginEmailEx" class="grey-text">Youtube or Podcast Rss url</label>
+      <input type="text" v-model="url" class="form-control" placeholder="url..."/>
+      <button type="button" class="btn btn-primary" v-on:click="searchUrl">Primary</button>
+
+      <br>
+      <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
     </main>
   </div>
 </template>
 
 <script>
   import FileDropdown from './LandingPage/FileDropdown'
-  import vito from '@/services/videos'
+  import Videos from '@/services/videos'
+  import Url from "@/services/url"
+  const path = require('upath')
 
   export default {
     name: 'landing-page',
+    data(){
+    return {
+      url: ''
+    }
+  },
     components: {
       FileDropdown
-
     },
     methods: {
+      searchUrl(){
+        console.log("searching....");
+        Url.getContent(this.url).then(v => console.log(v))
+      },
       handleFileChange(e) {
         // Whenever the file changes, emit the 'input' event with the file data.
-        vito.getFiles(e.target.files);
+        this.verifyFiles(e.target.files)
+      },
+      verifyFiles(files) {
+        let verifiedFiles = Videos.verifyFiles(Videos.getFiles(files))
+
+        if (!verifiedFiles.length) {
+          new Notification('Wrong format', {
+            body: 'Please, drop a video(s)',
+            // TODO: fix icon path
+            icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
+          })
+          return
+        }
+        Videos.set(verifiedFiles)
+        this.$router.push('videos')
       }
     }
   }
 </script>
 
 <style>
-  
+
 </style>

@@ -11,6 +11,11 @@ export default new Router({
       component: require('@/components/LandingPage').default
     },
     {
+      path: '/videos',
+      name: 'videos',
+      component: require('@/components/VideoList').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
