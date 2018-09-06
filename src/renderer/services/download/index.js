@@ -16,13 +16,21 @@ function clear() {
     episodes = []
 }
 
-async function download(output){
-    for (let episode of episodes) {
-        if (ytdl.validateURL(episode.url)) {
-            let title = episode.title.replace(/[/\\?%*:|"<>&]/g, "-"); //make sure there are no illeagale characters
-            await downloadVideo(episode.url, path.join(output, title + ".mp4"));
+async function download(output) {
+    if (episodes[0].url.indexOf("https://www.youtube.com/") >= 0) {
+        for (let episode of episodes) {
+            if (ytdl.validateURL(episode.url)) {
+                let title = episode.title.replace(/[/\\?%*:|"<>&]/g, "-"); //make sure there are no illeagale characters
+                await downloadVideo(episode.url, path.join(output, title + ".mp4"));
+            }
+        }
+    } else {
+        for (const episode of episodes) {
+            await downloadPodcast(episode.url, path.join(output, episode.title.replace(/[/\\?%*:|"<>&]/g, "-") + ".mp3"));
         }
     }
+
+
 }
 
 /**
@@ -36,6 +44,21 @@ async function downloadVideo(url, dir) {
             .pipe(fs.createWriteStream(dir)).on("finish", () => {
                 resolve(dir);
             });
+    });
+}
+
+/**
+ * 
+ * @param {String} path and name where the download should be stored
+ * @param {String} url to the podcast
+ */
+function downloadPodcast(url, path) {
+    return new Promise((resolve, reject) => {
+        request(url).pipe(fs.createWriteStream(path)).on('finish', function () {
+            resolve(path)
+        }).on('error', function (error) {
+            reject(error);
+        });
     });
 }
 
