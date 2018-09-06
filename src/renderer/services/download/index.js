@@ -1,6 +1,8 @@
 const ytdl = require("ytdl-core");
 const path = require("upath");
 const fs = require("fs");
+const request = require('request');
+
 
 let episodes = [];
 
@@ -16,16 +18,20 @@ function clear() {
     episodes = []
 }
 
-async function download(output) {
+async function download(output, downloadUpdate) {
+    let progress = 0;
     if (episodes[0].url.indexOf("https://www.youtube.com/") >= 0) {
         for (let episode of episodes) {
+            downloadUpdate(progress);
             if (ytdl.validateURL(episode.url)) {
                 let title = episode.title.replace(/[/\\?%*:|"<>&]/g, "-"); //make sure there are no illeagale characters
                 await downloadVideo(episode.url, path.join(output, title + ".mp4"));
             }
+            
         }
     } else {
         for (const episode of episodes) {
+            downloadUpdate(progress);
             await downloadPodcast(episode.url, path.join(output, episode.title.replace(/[/\\?%*:|"<>&]/g, "-") + ".mp3"));
         }
     }

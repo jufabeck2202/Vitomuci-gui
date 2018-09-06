@@ -27,7 +27,8 @@
         data() {
             return {
                 episodes: Download.get(),
-                output: ""
+                output: "",
+                downloadProgress: 0
             }
         },
         mounted() {
@@ -46,7 +47,11 @@
                 this.output = e.target.files[0].path;
             },
             download() {
-                Download.download(this.output).then(episodes => {})
+                Download.download(this.output, this.downloadUpdate).then(episodes => {})
+            },
+            downloadUpdate(progress) {
+                console.log(progress)
+                this.downloadProgress = progress
             }
         }
     }
