@@ -49,6 +49,19 @@ async function getPlaylist(url) {
 }
 
 /**
+ * Gets the title of a video
+ * @param {} url 
+ */
+async function getVideoTitle(url) {
+    return new Promise((resolve, reject) => {
+        ytdl.getInfo(url, (err, info) => {
+            if (err) throw reject(err);
+            resolve(info.title);
+        })
+    });
+}
+
+/**
  * Returns list of podcast or youtube videos
  * @param {*} url url to podcast or rss feed
  */
@@ -80,6 +93,8 @@ async function getContent(url) {
 
     }
 }
+
+
 export default {
     getContent
 }

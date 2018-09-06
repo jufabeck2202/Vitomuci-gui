@@ -43,13 +43,14 @@
   import FileDropdown from './LandingPage/FileDropdown'
   import Videos from '@/services/videos'
   import Url from "@/services/url"
+  import Download from "@/services/download"
   const path = require('upath')
 
   export default {
     name: 'landing-page',
     data() {
       return {
-        url: ''
+        url: 'https://collegeinfogeek.com/podcast'
       }
     },
     components: {
@@ -57,7 +58,6 @@
     },
     methods: {
       searchUrl() {
-        console.log("searching....");
         Url.getContent(this.url).then(episodes => {
           if (episodes === undefined || episodes.length === 0 ) {
               new Notification('Wrong url format', {
@@ -67,6 +67,9 @@
               })
               return
           }
+          //switch to download screen
+          Download.set(episodes)
+          this.$router.push('download')
         })
       },
       handleFileChange(e) {

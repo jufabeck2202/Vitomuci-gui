@@ -16,6 +16,11 @@ export default new Router({
       component: require('@/components/VideoList').default
     },
     {
+      path: '/download',
+      name: 'download',
+      component: require('@/components/Download').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
