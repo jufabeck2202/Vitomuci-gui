@@ -94,7 +94,7 @@
         this.download = true
         this.episodes = Download.get()
         console.log(this.episodes)
-      }else{
+      } else {
         this.episodes = Video.get()
       }
     },
@@ -109,10 +109,16 @@
     methods: {
       start() {
         if (this.download) {
-          Download.download(this.output, this.downloadUpdate)
+          Download.download(this.output, this.downloadUpdate).then(downloadedFiles => {
+            console.log(downloadedFiles)
+          })
         } else {
-          Split.checkffmpeg()
+         
         }
+      },
+      startSplitting(downloadedFiles){
+        Split.checkffmpeg()
+        Split.split(this.output,this.options)
       },
       outputFolder(e) {
         this.output = e.target.files[0].path

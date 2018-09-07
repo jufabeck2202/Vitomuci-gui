@@ -10,7 +10,7 @@ const chalk = require("chalk");
 let ffmetadata;
 
 
-async function split(){
+async function split(output,options){
       //Split track
       for (let item of files) {
         let seconds = await getFileLength(item);
