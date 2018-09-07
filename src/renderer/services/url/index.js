@@ -34,7 +34,7 @@ async function getPlaylist (url) {
         let episodes = []
         for (let i = 0; i < urls.data.playlist.length; i++) {
           episodes.push({
-            title: title.data.playlist[i],
+            name: title.data.playlist[i],
             url: urls.data.playlist[i]
           })
         }
@@ -78,7 +78,7 @@ async function getContent (url) {
       try {
         rss = await getRSS(url)
         rss.episodes.forEach(episode => {
-          episodes.push({title: episode.title, url: episode.enclosure.url})
+          episodes.push({name: episode.title, url: episode.enclosure.url})
         })
         return episodes
       } catch (error) {

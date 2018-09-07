@@ -1,61 +1,66 @@
 <template>
-    <div id="wrapper">
-        <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
-        <main>
-            <div v-for="(episode,i) in episodes" :key="episode.xxx">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" v-bind:id="i" checked>
-                    <label class="custom-control-label" v-bind:for="i">{{episode.title}}</label>
-                </div>
-            </div>
-            <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
-
-            <label for="defaultFormLoginEmailEx" class="grey-text">Youtube or Podcast Rss url</label>
-            <input type="text" v-model="output" class="form-control" placeholder="url..." />
-            <button type="button" class="btn btn-primary" v-on:click="download">Download</button>
-
-        </main>
+  <div id="wrapper">
+    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
+    <div class="overflow">
+      <div v-for="(episode,i) in episodes" :key="episode.xxx">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" v-bind:id="i" v-model="episode.checked">
+          <label class="custom-control-label" v-bind:for="i">{{episode.name}}</label>
+        </div>
+      </div>
     </div>
+    <button type="button" class="btn btn-primary btn-block" @click="confirm">Confirm</button>
+
+  </div>
 </template>
 
 <script>
-    import Download from '@/services/download'
-    const path = require('upath')
+  import Download from '@/services/download'
+  const path = require('upath')
 
-    export default {
-      name: 'download',
-      data () {
-        return {
-          episodes: Download.get(),
-          output: '',
-          downloadProgress: 0
+  export default {
+    name: 'download',
+    data() {
+      return {
+        episodes: ""
+      }
+    },
+    mounted() {
+      this.setChecked();
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if (!Download.get().length) {
+          vm.$router.push('landing-page')
         }
-      },
-      mounted () {
-
-      },
-      beforeRouteEnter (to, from, next) {
-        next(vm => {
-          if (!Download.get().length) {
-            vm.$router.push('landing-page')
+      })
+    },
+    components: {},
+    methods: {
+      confirm() {
+        let selectedEpisodes = [];
+        for (const episode of this.episodes) {
+          if (episode.checked) {
+            selectedEpisodes.push(episode);
           }
-        })
-      },
-      components: {},
-      methods: {
-        outputFolder (e) {
-          this.output = e.target.files[0].path
-        },
-        download () {
-          Download.download(this.output, this.downloadUpdate).then(episodes => {})
-        },
-        downloadUpdate (progress) {
-          console.log(progress)
-          this.downloadProgress = progress
         }
+        Download.set(selectedEpisodes);
+        this.$router.push('videos');
+      },
+      setChecked() {
+        let episodes = Download.get()
+        for (const episode of episodes) {
+          episode.checked = true
+        }
+        this.episodes = episodes;
       }
     }
+  }
 </script>
 
 <style>
+  .overflow {
+    overflow: scroll;
+    height: 300px;
+  }
 </style>

@@ -4,8 +4,8 @@
     <div class="container">
       <div class="row">
         <div class="col overflow">
-          <div v-for="(video) in videos" :key="video.xxx">
-            <li>{{video.name}}</li>
+          <div v-for="(episode) in episodes" :key="episode.xxx">
+            <li>{{episode.name}}</li>
           </div>
         </div>
         <div class="col">
@@ -38,11 +38,11 @@
               <label class="custom-control-label" for="split">Split</label>
             </div>
             <!-- Duration -->
-            <div class="form-group col">
+            <div class="form-group col" v-if="options.split=='split'">
               <label for="duration">Duration</label>
               <input type="text" class="form-control" id="duration" v-model="options.duration" placeholder="mm:ss">
             </div>
-            <div class="form-row" v-if="options.split=='split'">
+            <div class="form-row">
               <!-- Start -->
               <div class="form-group col">
                 <label for="start">Start</label>
@@ -58,18 +58,23 @@
         </div>
       </div>
     </div>
-    <button type="button" class="btn btn-primary btn-block" @click="start">Start Converting</button>
+    <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
+
+    <button :disabled="output==null" type="button" class="btn btn-primary btn-block" @click="start">{{download ? "Start downloading & converting":"Start converting" }}</button>
   </div>
 </template>
 
 <script>
   import Video from '@/services/videos'
+  import Download from '@/services/download'
 
   export default {
     name: 'download',
     data () {
       return {
-        videos: Video.get(),
+        download:false,
+        episodes: [],
+        output:null,
         options: {
           start: '2:30',
           end: '20:00',
@@ -83,22 +88,35 @@
       }
     },
     mounted () {
-
+      if(Download.get().length){
+        this.download = true;
+        this.episodes = Download.get();
+        console.log(this.episodes);
+      }else{
+        this.episodes = Video.get();
+      }
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
-        if (!Video.get().length) {
-          vm.$router.push('landing-page')
+        if (!Video.get().length && !Download.get().length) {
+          vm.$router.push('landing-page');
         }
       })
     },
     components: {},
     methods: {
       start () {
-        console.log(this.options)
+        console.log(this.options);
+        if(this.download){
+          Download.download(this.output,this.downloadUpdate)
+        }
       },
-      download () {},
-      downloadUpdate (progress) {}
+      outputFolder (e) {
+        this.output = e.target.files[0].path
+      },
+      downloadUpdate (progress) {
+        console.log(progress)
+      }
     }
   }
 </script>
