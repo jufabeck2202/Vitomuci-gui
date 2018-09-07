@@ -28,7 +28,6 @@
           </span>
         </label>
       </div>
-      <p class="h4 text-center mb-4">Sign in</p>
       <label for="defaultFormLoginEmailEx" class="grey-text">Youtube or Podcast Rss url</label>
       <input type="text" v-model="url" class="form-control" placeholder="url..." />
       <button type="button" class="btn btn-primary" v-on:click="searchUrl">Primary</button>
@@ -42,8 +41,8 @@
 <script>
   import FileDropdown from './LandingPage/FileDropdown'
   import Videos from '@/services/videos'
-  import Url from "@/services/url"
-  import Download from "@/services/download"
+  import Url from '@/services/url'
+  import Download from '@/services/download'
   const path = require('upath')
 
   export default {
@@ -59,15 +58,15 @@
     methods: {
       searchUrl() {
         Url.getContent(this.url).then(episodes => {
-          if (episodes === undefined || episodes.length === 0 ) {
-              new Notification('Wrong url format', {
-                body: 'Please, insert youtube or podcast url',
-                // TODO: fix icon path
-                icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
-              })
-              return
+          if (episodes === undefined || episodes.length === 0) {
+            new Notification('Wrong url format', {
+              body: 'Please, insert youtube or podcast url',
+              // TODO: fix icon path
+              icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
+            })
+            return
           }
-          //switch to download screen
+          // switch to download screen
           Download.set(episodes)
           this.$router.push('download')
         })

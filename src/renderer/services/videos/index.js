@@ -42,7 +42,6 @@ function verifyFiles (files) {
   let mediaFiles = []
   files.forEach(file => {
     if (videoFormats.includes(path.extname(file.path))) {
-      // mediaFiles.push(upath.normalize(file));
       mediaFiles.push(file)
     }
   })

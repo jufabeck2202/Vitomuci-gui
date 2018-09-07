@@ -19,41 +19,41 @@
 </template>
 
 <script>
-    import Download from "@/services/download"
+    import Download from '@/services/download'
     const path = require('upath')
 
     export default {
-        name: 'download',
-        data() {
-            return {
-                episodes: Download.get(),
-                output: "",
-                downloadProgress: 0
-            }
-        },
-        mounted() {
-
-        },
-        beforeRouteEnter(to, from, next) {
-            next(vm => {
-                if (!Download.get().length) {
-                    vm.$router.push('landing-page')
-                }
-            })
-        },
-        components: {},
-        methods: {
-            outputFolder(e) {
-                this.output = e.target.files[0].path;
-            },
-            download() {
-                Download.download(this.output, this.downloadUpdate).then(episodes => {})
-            },
-            downloadUpdate(progress) {
-                console.log(progress)
-                this.downloadProgress = progress
-            }
+      name: 'download',
+      data () {
+        return {
+          episodes: Download.get(),
+          output: '',
+          downloadProgress: 0
         }
+      },
+      mounted () {
+
+      },
+      beforeRouteEnter (to, from, next) {
+        next(vm => {
+          if (!Download.get().length) {
+            vm.$router.push('landing-page')
+          }
+        })
+      },
+      components: {},
+      methods: {
+        outputFolder (e) {
+          this.output = e.target.files[0].path
+        },
+        download () {
+          Download.download(this.output, this.downloadUpdate).then(episodes => {})
+        },
+        downloadUpdate (progress) {
+          console.log(progress)
+          this.downloadProgress = progress
+        }
+      }
     }
 </script>
 
