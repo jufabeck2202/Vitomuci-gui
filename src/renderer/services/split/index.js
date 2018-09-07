@@ -1,6 +1,6 @@
 const path = require("upath");
 const fs = require("fs");
-const ffprobe = require("node-ffprobe");
+const ffprobe = require("./../node-ffprobe");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffprobePath = require("@ffprobe-installer/ffprobe").path;
@@ -10,7 +10,7 @@ const chalk = require("chalk");
 let ffmetadata;
 
 
-function split(){
+async function split(){
       //Split track
       for (let item of files) {
         let seconds = await getFileLength(item);
@@ -254,5 +254,6 @@ function rename(files) {
 
 
 export default {
-  split
+  split,
+  checkffmpeg
 }

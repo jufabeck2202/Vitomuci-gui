@@ -42,8 +42,7 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns",
-      "asar": false
+      "icon": "build/icons/icon.icns"
     },
     "win": {
       "icon": "build/icons/icon.ico"
@@ -53,7 +52,9 @@
     }
   },
   "dependencies": {
-
+    "node-ffprobe": "git+ssh://git@github.com:ListenerApproved/node-ffprobe.git#master",
+    "@ffmpeg-installer/ffmpeg": "^1.0.15",
+    "@ffprobe-installer/ffprobe": "^1.0.9",
     "axios": "^0.18.0",
     "bulma": "^0.7.1",
     "clear": "^0.1.0",
@@ -67,7 +68,6 @@
     "inquirer": "^6.0.0",
     "is-url": "^1.2.4",
     "mdbvue": "^4.5.1",
-    "node-ffprobe": "github:ListenerApproved/node-ffprobe",
     "node-notifier": "^5.2.1",
     "node-podcast-parser": "^2.3.0",
     "ora": "^2.1.0",

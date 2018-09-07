@@ -20,15 +20,15 @@
 
   export default {
     name: 'download',
-    data() {
+    data () {
       return {
-        episodes: ""
+        episodes: ''
       }
     },
-    mounted() {
-      this.setChecked();
-    },
-    beforeRouteEnter(to, from, next) {
+    mounted () {
+      this.setChecked()
+  },
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Download.get().length) {
           vm.$router.push('landing-page')
@@ -37,22 +37,22 @@
     },
     components: {},
     methods: {
-      confirm() {
-        let selectedEpisodes = [];
+      confirm () {
+        let selectedEpisodes = []
         for (const episode of this.episodes) {
           if (episode.checked) {
-            selectedEpisodes.push(episode);
+            selectedEpisodes.push(episode)
           }
         }
-        Download.set(selectedEpisodes);
-        this.$router.push('videos');
+        Download.set(selectedEpisodes)
+        this.$router.push('videos')
       },
-      setChecked() {
+      setChecked () {
         let episodes = Download.get()
         for (const episode of episodes) {
           episode.checked = true
         }
-        this.episodes = episodes;
+        this.episodes = episodes
       }
     }
   }

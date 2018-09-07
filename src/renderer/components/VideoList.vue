@@ -18,12 +18,12 @@
             </div>
             <!-- rename ceckbox-->
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" v-model="options.rename"  id="rename">
+              <input type="checkbox" class="custom-control-input" v-model="options.rename" id="rename">
               <label class="custom-control-label" for="rename">Rename file, remove {}()[]</label>
             </div>
             <!-- Combine check box-->
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input"  v-model="options.metadata" id="combine">
+              <input type="checkbox" class="custom-control-input" v-model="options.metadata" id="combine">
               <label class="custom-control-label" for="combine">Combine clips into one album</label>
             </div>
             <!-- Radio select full-->
@@ -60,21 +60,23 @@
     </div>
     <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
 
-    <button :disabled="output==null" type="button" class="btn btn-primary btn-block" @click="start">{{download ? "Start downloading & converting":"Start converting" }}</button>
+    <button :disabled="output==null" type="button" class="btn btn-primary btn-block" @click="start">
+      {{download ? "Startdownloading & converting":"Start converting" }}</button>
   </div>
-</template>
+</template>∏
 
 <script>
   import Video from '@/services/videos'
   import Download from '@/services/download'
+  import Split from "@/services/split"
 
   export default {
     name: 'download',
-    data () {
+    data() {
       return {
-        download:false,
+        download: false,
         episodes: [],
-        output:null,
+        output: null,
         options: {
           start: '2:30',
           end: '20:00',
@@ -87,34 +89,35 @@
         }
       }
     },
-    mounted () {
-      if(Download.get().length){
-        this.download = true;
-        this.episodes = Download.get();
-        console.log(this.episodes);
+    mounted() {
+      if (Download.get().length) {
+        this.download = true
+        this.episodes = Download.get()
+        console.log(this.episodes)
       }else{
-        this.episodes = Video.get();
+        this.episodes = Video.get()
       }
     },
-    beforeRouteEnter (to, from, next) {
+    beforeRouteEnter(to, from, next) {
       next(vm => {
         if (!Video.get().length && !Download.get().length) {
-          vm.$router.push('landing-page');
+          vm.$router.push('landing-page')
         }
       })
     },
     components: {},
     methods: {
-      start () {
-        console.log(this.options);
-        if(this.download){
-          Download.download(this.output,this.downloadUpdate)
+      start() {
+        if (this.download) {
+          Download.download(this.output, this.downloadUpdate)
+        } else {
+          Split.checkffmpeg()
         }
       },
-      outputFolder (e) {
+      outputFolder(e) {
         this.output = e.target.files[0].path
       },
-      downloadUpdate (progress) {
+      downloadUpdate(progress) {
         console.log(progress)
       }
     }

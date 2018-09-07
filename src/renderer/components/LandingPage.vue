@@ -49,7 +49,7 @@
     name: 'landing-page',
     data () {
       return {
-        url: 'https://collegeinfogeek.com/podcast'
+        url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8'
       }
     },
     components: {
