@@ -9,21 +9,56 @@
           </div>
         </div>
         <div class="col">
-          <!--Card Primary-->
-          <div class="card indigo text-center z-depth-2">
-            <div class="card-body">
-              <h3 class="text-uppercase font-weight-bold amber-text mt-2 mb-3"><strong>News title</strong><i class="fa fa-heart-o ml-3"></i></h3>
-              <p class="white-text mb-0">Ut enim ad minima veniam, quis nostrum exercita tionem ullam corporis suscipit
-                laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea
-                voluptate non proident velit esse quam. </p>
+          <!-- Default form login -->
+          <form class="text-center">
+            <!-- Create cover checkbox-->
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="cover">
+              <label class="custom-control-label" for="cover">Create Cover</label>
             </div>
-          </div>
-          <!--/.Card Primary-->
+            <!-- rename ceckbox-->
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="rename">
+              <label class="custom-control-label" for="rename">Rename file, remove {}()[]</label>
+            </div>
+            <!-- Combine check box-->
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="combine">
+              <label class="custom-control-label" for="combine">Combine clips into one album</label>
+            </div>
+            <!-- Radio select full-->
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" value="full" v-model="options.split" id="full" name="split">
+              <label class="custom-control-label" for="full">Full</label>
+            </div>
+            <!-- Radio select split-->
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" value="split" v-model="options.split" id="split" name="split"
+                checked>
+              <label class="custom-control-label" for="split">Split</label>
+            </div>
+            <!-- Duration -->
+            <div class="form-group col">
+              <label for="duration">Duration</label>
+              <input type="text" class="form-control" id="duration" v-model="options.duration" placeholder="mm:ss">
+            </div>
+            <div class="form-row" v-if="options.split=='split'">
+              <!-- Start -->
+              <div class="form-group col">
+                <label for="start">Start</label>
+                <input type="text" class="form-control" id="start" v-model="options.start" placeholder="mm:ss">
+              </div>
+              <!-- End -->
+              <div class="form-group col">
+                <label for="end">End</label>
+                <input type="text" class="form-control" id="end" v-model="options.end" placeholder="mm:ss">
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-
-
+    <button type="button" class="btn btn-primary btn-block" @click="start">Start Converting</button>
   </div>
 </template>
 
@@ -34,7 +69,13 @@
     name: 'download',
     data() {
       return {
-        videos: Video.get()
+        videos: Video.get(),
+        options: {
+          start: "2:30",
+          end: "20:00",
+          duration: "3:00",
+          split: "split"
+        }
       }
     },
     mounted() {
@@ -49,19 +90,18 @@
     },
     components: {},
     methods: {
-      download() {
-        Download.download(this.output, this.downloadUpdate).then(episodes => {})
+      start() {
+        console.log(this.options);
       },
-      downloadUpdate(progress) {
-        this.downloadProgress = progress
-      }
+      download() {},
+      downloadUpdate(progress) {}
     }
   }
 </script>
 
 <style>
-.overflow{
-  overflow: scroll;
+  .overflow {
+    overflow: scroll;
     height: 300px;
-}
+  }
 </style>
