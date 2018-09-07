@@ -47,7 +47,7 @@
 
   export default {
     name: 'landing-page',
-    data() {
+    data () {
       return {
         url: 'https://collegeinfogeek.com/podcast'
       }
@@ -56,7 +56,7 @@
       FileDropdown
     },
     methods: {
-      searchUrl() {
+      searchUrl () {
         Url.getContent(this.url).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
             new Notification('Wrong url format', {
@@ -71,11 +71,11 @@
           this.$router.push('download')
         })
       },
-      handleFileChange(e) {
+      handleFileChange (e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles(files) {
+      verifyFiles (files) {
         let verifiedFiles = Videos.verifyFiles(Videos.getFiles(files))
 
         if (!verifiedFiles.length) {

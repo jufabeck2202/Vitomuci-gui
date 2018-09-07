@@ -13,17 +13,17 @@
           <form class="text-center">
             <!-- Create cover checkbox-->
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="cover">
+              <input type="checkbox" class="custom-control-input" v-model="options.cover" id="cover">
               <label class="custom-control-label" for="cover">Create Cover</label>
             </div>
             <!-- rename ceckbox-->
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="rename">
+              <input type="checkbox" class="custom-control-input" v-model="options.rename"  id="rename">
               <label class="custom-control-label" for="rename">Rename file, remove {}()[]</label>
             </div>
             <!-- Combine check box-->
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="combine">
+              <input type="checkbox" class="custom-control-input"  v-model="options.metadata" id="combine">
               <label class="custom-control-label" for="combine">Combine clips into one album</label>
             </div>
             <!-- Radio select full-->
@@ -67,21 +67,25 @@
 
   export default {
     name: 'download',
-    data() {
+    data () {
       return {
         videos: Video.get(),
         options: {
-          start: "2:30",
-          end: "20:00",
-          duration: "3:00",
-          split: "split"
+          start: '2:30',
+          end: '20:00',
+          duration: '3:00',
+          split: 'split',
+          metadata: false,
+          cover: false,
+          rename: false
+
         }
       }
     },
-    mounted() {
+    mounted () {
 
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Video.get().length) {
           vm.$router.push('landing-page')
@@ -90,11 +94,11 @@
     },
     components: {},
     methods: {
-      start() {
-        console.log(this.options);
+      start () {
+        console.log(this.options)
       },
-      download() {},
-      downloadUpdate(progress) {}
+      download () {},
+      downloadUpdate (progress) {}
     }
   }
 </script>
