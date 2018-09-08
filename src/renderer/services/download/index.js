@@ -20,7 +20,6 @@ function clear () {
 async function download (output, downloadUpdate) {
   let progress = 0
   let downloadedEpisodes = [];
-  console.log(episodes[0].url)
   if (episodes[0].url.includes("youtube")) {
     for (let episode of episodes) {
       downloadUpdate(progress)

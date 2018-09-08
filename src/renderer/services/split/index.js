@@ -13,12 +13,18 @@ let options
 
 async function split(output, files, optionsObj) {
     options = optionsObj
+    //convert spring to seconds
+    options.startAt = stringToSeconds(options.startAt);
+    options.endAt = stringToSeconds(options.endAt);
+    options.duration = stringToSeconds(options.duration);
     //Split track
-    fs.mkdirSync(path.join(output, options.outputFolder))
+    output = path.join(output, options.outputFolder)
+    fs.mkdirSync(output)
     for (let file of files) {
         let seconds = await getFileLength(file.path);
         await splitTrack(output, file, Number(seconds));
     }
+    console.log("Finished Splitting")
 
     //set metadata name to first file in array if not set
     if (options.name === "") {
@@ -94,7 +100,6 @@ async function splitTrack(outputDirectory, file, duration) {
     }
 
     let durationIndex = options.startAt;
-
     while ((durationIndex + options.duration) <= (duration - options.endAt)) {
         await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration);
         durationIndex += options.duration;
@@ -242,8 +247,6 @@ function rename(files) {
 
     let renamedFiles = [];
     files.forEach(function (file) {
-        let basename = path.basename(file);
-        let curDir = path.dirname(file)
         let removeRound = basename.replace(/ *\([^)]*\) */g, "");
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, "");
         let newName = path.join(curDir, removeSquare);
@@ -256,5 +259,6 @@ function rename(files) {
 
 export default {
     split,
-    checkffmpeg
+    checkffmpeg,
+    rename
 }

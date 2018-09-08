@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col overflow">
           <div v-for="(episode) in episodes" :key="episode.xxx">
-            <li>{{episode.name}}</li>
+            <li>{{options.rename?renamePreview(episode.name):episode.name}}</li>
           </div>
         </div>
         <div class="col">
@@ -66,77 +66,89 @@
 </template>∏
 
 <script>
-import Video from "@/services/videos";
-import Download from "@/services/download";
-import Split from "@/services/split";
+  import Video from "@/services/videos";
+  import Download from "@/services/download";
+  import Split from "@/services/split";
+  import {
+    rename
+  } from "fs";
 
-export default {
-  name: "download",
-  data() {
-    return {
-      download: false,
-      episodes: [],
-      output: null,
-      options: {
-        startAt: "2:30",
-        endAt: "20:00",
-        duration: "3:00",
-        split: "split",
-        metadata: false,
-        cover: false,
-        rename: false,
-        full:false,
-        outputFolder: "audio"
-      }
-    };
-  },
-  mounted() {
-    if (Download.get().length) {
-      this.download = true;
-      this.episodes = Download.get();
-      console.log(this.episodes);
-    } else {
-      this.episodes = Video.get();
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (!Video.get().length && !Download.get().length) {
-        vm.$router.push("landing-page");
-      }
-    });
-  },
-  components: {},
-  methods: {
-    start() {
-      if (this.download) {
-        Download.download(this.output, this.downloadUpdate).then(
-          downloadedFiles => {
-            console.log(downloadedFiles);
-          }
-        );
+  export default {
+    name: "download",
+    data() {
+      return {
+        download: false,
+        episodes: [],
+        output: null,
+        options: {
+          startAt: "00:00",
+          endAt: "00:00",
+          duration: "3:00",
+          split: "split",
+          metadata: false,
+          cover: false,
+          rename: false,
+          full: false,
+          outputFolder: "audio"
+        }
+      };
+    },
+    mounted() {
+      if (Download.get().length) {
+        this.download = true;
+        this.episodes = Download.get();
       } else {
-        this.startSplitting(this.episodes);
+        this.episodes = Video.get();
       }
     },
-    startSplitting(downloadedFiles) {
-      Split.checkffmpeg();
-      //this.options.full = this.split === "split" ? true : false
-      Split.split(this.output, downloadedFiles, this.options);
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if (!Video.get().length && !Download.get().length) {
+          vm.$router.push("landing-page");
+        }
+      });
     },
-    outputFolder(e) {
-      this.output = e.target.files[0].path;
-    },
-    downloadUpdate(progress) {
-      console.log(progress);
+    components: {},
+    methods: {
+      start() {
+        if (this.download) {
+          Download.download(this.output, this.downloadUpdate).then(
+            downloadedFiles => {
+              console.log(downloadedFiles);
+            }
+          );
+        } else {
+          this.startSplitting(this.episodes);
+        }
+      },
+      startSplitting(downloadedFiles) {
+        Split.checkffmpeg();
+        //this.options.full = this.split === "split" ? true : false
+        Split.split(this.output, downloadedFiles, this.options).then(finished => {
+          console.log(finished);
+        });
+      },
+      //preview rename
+      renamePreview(name) {
+        let removeRound = name.replace(/ *\([^)]*\) */g, "");
+        let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, "");
+        let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, "");
+        name = removeSwift;
+        return name;
+      },
+      outputFolder(e) {
+        this.output = e.target.files[0].path;
+      },
+      downloadUpdate(progress) {
+        console.log(progress);
+      }
     }
-  }
-};
+  };
 </script>
 
 <style>
-.overflow {
-  overflow: scroll;
-  height: 300px;
-}
+  .overflow {
+    overflow: scroll;
+    height: 300px;
+  }
 </style>
