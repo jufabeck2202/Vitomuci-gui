@@ -8,14 +8,16 @@ const chalk = require("chalk");
 
 
 let ffmetadata;
+let options
 
 
-async function split(output,options){
-      //Split track
-      for (let item of files) {
-        let seconds = await getFileLength(item);
-        let filename = path.basename(item);
-        await splitTrack(baseDirectory, outputDirectory, filename, Number(seconds));
+async function split(output, files, optionsObj) {
+    options = optionsObj
+    //Split track
+    fs.mkdirSync(path.join(output, options.outputFolder))
+    for (let file of files) {
+        let seconds = await getFileLength(file.path);
+        await splitTrack(output, file, Number(seconds));
     }
 
     //set metadata name to first file in array if not set
@@ -81,25 +83,25 @@ function segmentMp3(input, output, start, duration) {
  * @param {String} name 
  * @param {Number} duration 
  */
-async function splitTrack(baseDirectory, outputDirectory, name, duration) {
+async function splitTrack(outputDirectory, file, duration) {
     let parts = 0;
     //if you dont want seprate clips
     if (options.full) {
-        let ext = path.extname(name);
-        let newName = path.removeExt(name, ext);
-        await segmentMp3(path.join(baseDirectory, name), path.join(outputDirectory, newName + ".mp3"), 0, duration);
+        let ext = path.extname(file.name);
+        let newName = path.removeExt(file.name, ext);
+        await segmentMp3(file.path, path.join(outputDirectory, newName + ".mp3"), 0, duration);
         return;
     }
 
     let durationIndex = options.startAt;
 
     while ((durationIndex + options.duration) <= (duration - options.endAt)) {
-        await segmentMp3(path.join(baseDirectory, name), path.join(outputDirectory, getSegmentName(name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration);
+        await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration);
         durationIndex += options.duration;
         parts++;
     }
     if (((duration - options.endAt) - durationIndex) >= 30) {
-        await segmentMp3(path.join(baseDirectory, name), path.join(outputDirectory, getSegmentName(name, durationIndex, duration - options.endAt)), durationIndex, options.duration);
+        await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, options.duration);
         parts++;
     }
 
@@ -210,8 +212,7 @@ function getCoverPicture(file, baseDirectory, picTime) {
                 size: "320x240"
             }).on("end", function (stdout, stderr) {
                 resolve(path.join(baseDirectory, "cover.jpg"));
-            }).on('error', function (err, stdout, stderr) {
-            });;
+            }).on('error', function (err, stdout, stderr) {});;
     });
 };
 
@@ -254,6 +255,6 @@ function rename(files) {
 
 
 export default {
-  split,
-  checkffmpeg
+    split,
+    checkffmpeg
 }

@@ -46,12 +46,12 @@
               <!-- Start -->
               <div class="form-group col">
                 <label for="start">Start</label>
-                <input type="text" class="form-control" id="start" v-model="options.start" placeholder="mm:ss">
+                <input type="text" class="form-control" id="startAt" v-model="options.startAt" placeholder="mm:ss">
               </div>
               <!-- End -->
               <div class="form-group col">
                 <label for="end">End</label>
-                <input type="text" class="form-control" id="end" v-model="options.end" placeholder="mm:ss">
+                <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
               </div>
             </div>
           </form>
@@ -66,73 +66,77 @@
 </template>∏
 
 <script>
-  import Video from '@/services/videos'
-  import Download from '@/services/download'
-  import Split from "@/services/split"
+import Video from "@/services/videos";
+import Download from "@/services/download";
+import Split from "@/services/split";
 
-  export default {
-    name: 'download',
-    data() {
-      return {
-        download: false,
-        episodes: [],
-        output: null,
-        options: {
-          start: '2:30',
-          end: '20:00',
-          duration: '3:00',
-          split: 'split',
-          metadata: false,
-          cover: false,
-          rename: false
-
-        }
+export default {
+  name: "download",
+  data() {
+    return {
+      download: false,
+      episodes: [],
+      output: null,
+      options: {
+        startAt: "2:30",
+        endAt: "20:00",
+        duration: "3:00",
+        split: "split",
+        metadata: false,
+        cover: false,
+        rename: false,
+        full:false,
+        outputFolder: "audio"
       }
-    },
-    mounted() {
-      if (Download.get().length) {
-        this.download = true
-        this.episodes = Download.get()
-        console.log(this.episodes)
+    };
+  },
+  mounted() {
+    if (Download.get().length) {
+      this.download = true;
+      this.episodes = Download.get();
+      console.log(this.episodes);
+    } else {
+      this.episodes = Video.get();
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (!Video.get().length && !Download.get().length) {
+        vm.$router.push("landing-page");
+      }
+    });
+  },
+  components: {},
+  methods: {
+    start() {
+      if (this.download) {
+        Download.download(this.output, this.downloadUpdate).then(
+          downloadedFiles => {
+            console.log(downloadedFiles);
+          }
+        );
       } else {
-        this.episodes = Video.get()
+        this.startSplitting(this.episodes);
       }
     },
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        if (!Video.get().length && !Download.get().length) {
-          vm.$router.push('landing-page')
-        }
-      })
+    startSplitting(downloadedFiles) {
+      Split.checkffmpeg();
+      //this.options.full = this.split === "split" ? true : false
+      Split.split(this.output, downloadedFiles, this.options);
     },
-    components: {},
-    methods: {
-      start() {
-        if (this.download) {
-          Download.download(this.output, this.downloadUpdate).then(downloadedFiles => {
-            console.log(downloadedFiles)
-          })
-        } else {
-         
-        }
-      },
-      startSplitting(downloadedFiles){
-        Split.checkffmpeg()
-        Split.split(this.output,this.options)
-      },
-      outputFolder(e) {
-        this.output = e.target.files[0].path
-      },
-      downloadUpdate(progress) {
-        console.log(progress)
-      }
+    outputFolder(e) {
+      this.output = e.target.files[0].path;
+    },
+    downloadUpdate(progress) {
+      console.log(progress);
     }
   }
+};
 </script>
 
 <style>
-  .overflow {
-    overflow: scroll;
-    height: 300px;
-  }
+.overflow {
+  overflow: scroll;
+  height: 300px;
+}
 </style>
