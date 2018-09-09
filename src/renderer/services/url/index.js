@@ -3,6 +3,8 @@ const ytlist = require('youtube-playlist')
 const parsePodcast = require('node-podcast-parser')
 const path = require('upath')
 const request = require('request')
+const ytdl = require("ytdl-core");
+
 
 /**
  *
@@ -52,7 +54,8 @@ async function getVideoTitle (url) {
   return new Promise((resolve, reject) => {
     ytdl.getInfo(url, (err, info) => {
       if (err) throw reject(err)
-      resolve(info.title)
+      console.log(info)
+      resolve(info)
     })
   })
 }
@@ -69,6 +72,7 @@ async function getContent (url) {
       // check if single video or playlist
       try {
         episodes = await getPlaylist(url)
+        //info =await getVideoTitle("https://www.youtube.com/watch?v=LL9kcGra9Rs")
       } catch (error) {
       }
       return episodes

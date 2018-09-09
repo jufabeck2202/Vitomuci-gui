@@ -54,6 +54,8 @@
                 <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
               </div>
             </div>
+            <button  type="button" class="btn btn-small btn-primary btn-block"> Save as default
+      </button>
           </form>
         </div>
       </div>
@@ -61,7 +63,7 @@
     <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
 
     <button :disabled="output==null" type="button" class="btn btn-primary btn-block" @click="start">
-      {{download ? "Startdownloading & converting":"Start converting" }}</button>
+      {{download ? "Start downloading & converting":"Start converting" }}</button>
   </div>
 </template>∏
 
@@ -89,6 +91,7 @@
           cover: false,
           rename: false,
           full: false,
+          name:"",
           outputFolder: "audio"
         }
       };
@@ -114,7 +117,7 @@
         if (this.download) {
           Download.download(this.output, this.downloadUpdate).then(
             downloadedFiles => {
-              console.log(downloadedFiles);
+            this.startSplitting(downloadedFiles);
             }
           );
         } else {
@@ -123,13 +126,14 @@
       },
       startSplitting(downloadedFiles) {
         Split.checkffmpeg();
-        //this.options.full = this.split === "split" ? true : false
-        Split.split(this.output, downloadedFiles, this.options).then(finished => {
-          console.log(finished);
+        this.options.full = this.options.split === "full" ? true : false
+        Split.split(this.output, downloadedFiles, this.options).then(clips => {
+          console.log(clips);
         });
       },
       //preview rename
       renamePreview(name) {
+
         let removeRound = name.replace(/ *\([^)]*\) */g, "");
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, "");
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, "");

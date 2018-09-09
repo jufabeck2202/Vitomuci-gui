@@ -9,7 +9,7 @@ const chalk = require("chalk");
 
 let ffmetadata;
 let options
-
+let clips = []
 
 async function split(output, files, optionsObj) {
     options = optionsObj
@@ -28,14 +28,13 @@ async function split(output, files, optionsObj) {
 
     //set metadata name to first file in array if not set
     if (options.name === "") {
-        let filename = path.basename(files[0])
-        options.name = filename.substr(0, filename.lastIndexOf(".")) || filename;
+        options.name = files[0].name;
     }
     //take cover picture
     if (options.cover)
-        coverPath = await getCoverPicture(files[0], baseDirectory, options.startAt);
+        coverPath = await getCoverPicture(files[0], output, options.startAt);
 
-    //updating meta data
+    //updating meta data, combines Clips into album
     if (options.metadata) {
         files = fs.readdirSync(outputDirectory);
         for (let file of files) {
@@ -44,6 +43,7 @@ async function split(output, files, optionsObj) {
     }
 
     if (options.cover) await deleteFile(coverPath);
+    return clips
 }
 
 /**
@@ -90,24 +90,35 @@ function segmentMp3(input, output, start, duration) {
  * @param {Number} duration 
  */
 async function splitTrack(outputDirectory, file, duration) {
-    let parts = 0;
     //if you dont want seprate clips
     if (options.full) {
         let ext = path.extname(file.name);
         let newName = path.removeExt(file.name, ext);
         await segmentMp3(file.path, path.join(outputDirectory, newName + ".mp3"), 0, duration);
+        clips.push({
+            name: newName,
+            path: path.join(outputDirectory, newName + ".mp3")
+        })
         return;
     }
 
     let durationIndex = options.startAt;
     while ((durationIndex + options.duration) <= (duration - options.endAt)) {
         await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration);
+        clips.push({
+            name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
+            path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
+        })
         durationIndex += options.duration;
-        parts++;
+
     }
     if (((duration - options.endAt) - durationIndex) >= 30) {
         await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, options.duration);
-        parts++;
+        clips.push({
+            name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
+            path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
+        })
+
     }
 
 }
