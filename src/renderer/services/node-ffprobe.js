@@ -1,180 +1,176 @@
 var spawn = require('child_process').spawn,
-    spawnSync = require('child_process').spawnSync,
-	path = require('path');
+  spawnSync = require('child_process').spawnSync,
+  path = require('path')
 
+module.exports = (function () {
+  function findBlocks (raw) {
+    var stream_start = raw.indexOf('[STREAM]') + 8,
+      stream_end = raw.lastIndexOf('[/STREAM]'),
+      format_start = raw.indexOf('[FORMAT]') + 8,
+      format_end = raw.lastIndexOf('[/FORMAT]')
 
+    var blocks = { streams: null, format: null }
 
-module.exports = (function() {
-	function findBlocks(raw) {
-		var stream_start = raw.indexOf('[STREAM]') + 8,
-				stream_end = raw.lastIndexOf('[/STREAM]'),
-				format_start = raw.indexOf('[FORMAT]') + 8,
-				format_end = raw.lastIndexOf('[/FORMAT]');
+    if (stream_start !== 7 && stream_end !== -1) {
+      blocks.streams = raw.slice(stream_start, stream_end).trim()
+    }
 
-		var blocks = { streams: null, format: null };
+    if (format_start !== 7 && format_end !== -1) {
+      blocks.format = raw.slice(format_start, format_end).trim()
+    }
 
-		if(stream_start !== 7 && stream_end !== -1) {
-			blocks.streams = raw.slice(stream_start, stream_end).trim();
-		}
+    return blocks
+  };
 
-		if(format_start !== 7 && format_end !== -1) {
-			blocks.format = raw.slice(format_start, format_end).trim();
-		}
+  function parseField (str) {
+    str = ('' + str).trim()
+    return str.match(/^\d+\.?\d*$/) ? parseFloat(str) : str
+  };
 
-		return blocks;
-	};
+  function parseBlock (block) {
+    var block_object = {}, lines = block.split('\n')
 
+    lines.forEach(function (line) {
+      var data = line.split('=')
+      if (data && data.length === 2) {
+        block_object[data[0]] = parseField(data[1])
+      }
+    })
 
-	function parseField(str) {
-		str = ("" + str).trim();
-		return str.match(/^\d+\.?\d*$/) ? parseFloat(str) : str;
-	};
+    return block_object
+  };
 
-	function parseBlock(block) {
-		var block_object = {}, lines = block.split('\n');
+  function extractMetadata (raw_data, metadata, other) {
+    for (var attr in raw_data) {
+      if (raw_data.hasOwnProperty(attr)) {
+        if (attr.indexOf('TAG') === -1) other[attr] = raw_data[attr]
+        else metadata[attr.slice(4)] = raw_data[attr]
+      }
+    }
+  }
 
-		lines.forEach(function(line) {
-			var data = line.split('=');
-			if(data && data.length === 2) {
-				block_object[data[0]] = parseField(data[1]);
-			}
-		});
+  function parseStreams (text, callback) {
+    if (!text) return { streams: null }
 
-		return block_object;
-	};
+    var streams = []
+    var streamsMetadata = []
+    var blocks = text.replace('[STREAM]\n', '').split('[/STREAM]')
 
-	function extractMetadata(raw_data, metadata, other) {
-		for(var attr in raw_data) {
-			if(raw_data.hasOwnProperty(attr)) {
-				if(attr.indexOf('TAG') === -1) other[attr] = raw_data[attr];
-				else metadata[attr.slice(4)] = raw_data[attr];
-			}
-		}
-	}
+    blocks.forEach(function (stream, idx) {
+      var codec_data = parseBlock(stream)
+      var sindex = codec_data.index
+      delete codec_data.index
 
-	function parseStreams(text, callback) {
-		if(!text) return { streams: null };
+      var stream = { },
+        metadata = { }
 
-		var streams = [];
-		var streamsMetadata = [];
-		var blocks = text.replace('[STREAM]\n', '').split('[/STREAM]');
+      extractMetadata(codec_data, metadata, stream)
 
-		blocks.forEach(function(stream, idx) {
-			var codec_data = parseBlock(stream);
-			var sindex = codec_data.index;
-			delete codec_data.index;
+      if (sindex) {
+        streams[sindex] = stream
+        streamsMetadata[sindex] = metadata
+      } else {
+        streams.push(codec_data)
+        streamsMetadata.push(metadata)
+      }
+    })
 
-			var stream = { },
-					metadata = { };
+    return { streams: streams, metadata: streamsMetadata }
+  };
 
-			extractMetadata(codec_data, metadata, stream);
+  function parseFormat (text, callback) {
+    if (!text) return { format: null }
 
-			if(sindex) {
-				streams[sindex] = stream;
-				streamsMetadata[sindex] = metadata;
-			}
-			else {
-				streams.push(codec_data);
-				streamsMetadata.push(metadata);
-			}
-		});
+    var block = text.replace('[FORMAT]\n', '').replace('[/FORMAT]', '')
 
-		return { streams: streams, metadata: streamsMetadata };
-	};
+    var raw_format = parseBlock(block),
+      format = { },
+      metadata = { }
 
-	function parseFormat(text, callback) {
-		if(!text) return { format: null }
+    // REMOVE metadata
+    delete raw_format.filename
+    extractMetadata(raw_format, metadata, format)
 
-		var block = text.replace('[FORMAT]\n', '').replace('[/FORMAT]', '');
+    return { format: format, metadata: metadata }
+  };
 
-		var raw_format = parseBlock(block),
-				format = { },
-				metadata = { };
+  function doProbeSync (file, callback) {
+    var proc = spawnSync(module.exports.FFPROBE_PATH || 'ffprobe', ['-show_streams', '-show_format', '-loglevel', 'warning', file], { encoding: 'utf8' }),
+      probeData = [],
+      errData = [],
+      exitCode = null,
+      start = Date.now()
+    probeData.push(proc.stdout)
+    errData.push(proc.stderr)
+    exitCode = proc.status
+    if (proc.error) {
+      callback(proc.error)
+    }
+    var blocks = findBlocks(probeData.join(''))
+    var s = parseStreams(blocks.streams),
+      f = parseFormat(blocks.format)
+    if (exitCode) {
+      var err_output = errData.join('')
+      return callback(err_output)
+    }
+    f.metadata.streams = s.metadata
+    callback(null, {
+      filename: path.basename(file),
+      filepath: path.dirname(file),
+      fileext: path.extname(file),
+      file: file,
+      probe_time: Date.now() - start,
+      streams: s.streams,
+      format: f.format,
+      metadata: f.metadata
+    })
+  }
+  function doProbe (file, callback) {
+    var proc = spawn(module.exports.FFPROBE_PATH || 'ffprobe', ['-show_streams', '-show_format', '-loglevel', 'warning', file]),
 
-		//REMOVE metadata
-		delete raw_format.filename;
-		extractMetadata(raw_format, metadata, format);
+      probeData = [],
+      errData = [],
+      exitCode = null,
+      start = Date.now()
 
-		return { format: format, metadata: metadata };
-	};
+    proc.stdout.setEncoding('utf8')
+    proc.stderr.setEncoding('utf8')
 
-	function doProbeSync(file, callback) {
-		var proc = spawnSync(module.exports.FFPROBE_PATH || 'ffprobe', ['-show_streams', '-show_format', '-loglevel', 'warning', file], { encoding : 'utf8' }),
-				probeData = [],
-				errData = [],
-				exitCode = null,
-				start = Date.now();
-		probeData.push(proc.stdout);
-		errData.push(proc.stderr);
-		exitCode = proc.status;
-		if (proc.error) {
-			callback(proc.error); 
-		}
-		var blocks = findBlocks(probeData.join(''));
-		var s = parseStreams(blocks.streams),
-			f = parseFormat(blocks.format);
-		if (exitCode) {
-			var err_output = errData.join('');
-			return callback(err_output);
-		}
-		f.metadata.streams = s.metadata;
-		callback(null, {
-			filename: path.basename(file),
-			filepath: path.dirname(file),
-			fileext: path.extname(file),
-			file: file,
-			probe_time: Date.now() - start,
-			streams: s.streams,
-			format: f.format,
-			metadata: f.metadata
-		});		
-	}
-	function doProbe(file, callback) {
-		var proc = spawn(module.exports.FFPROBE_PATH || 'ffprobe', ['-show_streams', '-show_format', '-loglevel', 'warning', file]),
+    proc.stdout.on('data', function (data) { probeData.push(data) })
+    proc.stderr.on('data', function (data) { errData.push(data) })
 
-				probeData = [],
-				errData = [],
-				exitCode = null,
-				start = Date.now();
+    proc.on('exit', function (code) {
+      exitCode = code
+    })
+    proc.on('error', function (err) {
+      callback(err)
+    })
+    proc.on('close', function () {
+      var blocks = findBlocks(probeData.join(''))
 
-		proc.stdout.setEncoding('utf8');
-		proc.stderr.setEncoding('utf8');
+      var s = parseStreams(blocks.streams),
+        f = parseFormat(blocks.format)
 
-		proc.stdout.on('data', function(data) { probeData.push(data) });
-		proc.stderr.on('data', function(data) { errData.push(data) });
+      if (exitCode) {
+        var err_output = errData.join('')
+        return callback(err_output)
+      }
 
-		proc.on('exit', function(code) {
-			exitCode = code;
-		});
-		proc.on('error', function(err) {
-			callback(err);
-		});
-		proc.on('close', function() {
-			var blocks = findBlocks(probeData.join(''));
+      f.metadata.streams = s.metadata
 
-			var s = parseStreams(blocks.streams),
-					f = parseFormat(blocks.format);
+      callback(null, {
+        filename: path.basename(file),
+        filepath: path.dirname(file),
+        fileext: path.extname(file),
+        file: file,
+        probe_time: Date.now() - start,
+        streams: s.streams,
+        format: f.format,
+        metadata: f.metadata
+      })
+    })
+  };
 
-			if (exitCode) {
-				var err_output = errData.join('');
-				return callback(err_output);
-			}
-
-			f.metadata.streams = s.metadata;
-
-			callback(null, {
-				filename: path.basename(file),
-				filepath: path.dirname(file),
-				fileext: path.extname(file),
-				file: file,
-				probe_time: Date.now() - start,
-				streams: s.streams,
-				format: f.format,
-				metadata: f.metadata
-			});
-		});
-	};
-
-	if (module.exports.SYNC) return doProbeSync;
-	return doProbe;
+  if (module.exports.SYNC) return doProbeSync
+  return doProbe
 })()

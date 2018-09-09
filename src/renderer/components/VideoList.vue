@@ -19,7 +19,7 @@
             <!-- rename ceckbox-->
             <div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" v-model="options.rename" id="rename">
-              <label class="custom-control-label" for="rename">Rename file, remove {}()[]</label>
+              <label class="custom-control-label" for="rename">remove {}()[] from filenames</label>
             </div>
             <!-- Combine check box-->
             <div class="custom-control custom-checkbox">
@@ -54,7 +54,7 @@
                 <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
               </div>
             </div>
-            <button  type="button" class="btn btn-small btn-primary btn-block"> Save as default
+            <button  type="button" class="btn btn-sm btn-primary btn-block"> Save as default
       </button>
           </form>
         </div>
@@ -68,86 +68,85 @@
 </template>∏
 
 <script>
-  import Video from "@/services/videos";
-  import Download from "@/services/download";
-  import Split from "@/services/split";
-  import {
+  import Video from '@/services/videos'
+import Download from '@/services/download'
+import Split from '@/services/split'
+import {
     rename
-  } from "fs";
+  } from 'fs'
 
-  export default {
-    name: "download",
-    data() {
+export default {
+    name: 'download',
+    data () {
       return {
         download: false,
         episodes: [],
         output: null,
         options: {
-          startAt: "00:00",
-          endAt: "00:00",
-          duration: "3:00",
-          split: "split",
+          startAt: '00:00',
+          endAt: '00:00',
+          duration: '3:00',
+          split: 'split',
           metadata: false,
           cover: false,
           rename: false,
           full: false,
-          name:"",
-          outputFolder: "audio"
+          name: '',
+          outputFolder: 'audio'
         }
-      };
-    },
-    mounted() {
+      }
+  },
+    mounted () {
       if (Download.get().length) {
-        this.download = true;
-        this.episodes = Download.get();
+        this.download = true
+        this.episodes = Download.get()
       } else {
-        this.episodes = Video.get();
+        this.episodes = Video.get()
       }
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Video.get().length && !Download.get().length) {
-          vm.$router.push("landing-page");
+          vm.$router.push('landing-page')
         }
-      });
-    },
+      })
+  },
     components: {},
     methods: {
-      start() {
+      start () {
         if (this.download) {
           Download.download(this.output, this.downloadUpdate).then(
             downloadedFiles => {
-            this.startSplitting(downloadedFiles);
+              this.startSplitting(downloadedFiles)
             }
-          );
+          )
         } else {
-          this.startSplitting(this.episodes);
+          this.startSplitting(this.episodes)
         }
       },
-      startSplitting(downloadedFiles) {
-        Split.checkffmpeg();
-        this.options.full = this.options.split === "full" ? true : false
+      startSplitting (downloadedFiles) {
+        Split.checkffmpeg()
+        this.options.full = this.options.split === 'full'
         Split.split(this.output, downloadedFiles, this.options).then(clips => {
-          console.log(clips);
-        });
+          console.log(clips)
+        })
       },
-      //preview rename
-      renamePreview(name) {
-
-        let removeRound = name.replace(/ *\([^)]*\) */g, "");
-        let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, "");
-        let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, "");
-        name = removeSwift;
-        return name;
+      // preview rename
+      renamePreview (name) {
+        let removeRound = name.replace(/ *\([^)]*\) */g, '')
+        let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
+        let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
+        name = removeSwift
+        return name
       },
-      outputFolder(e) {
-        this.output = e.target.files[0].path;
+      outputFolder (e) {
+        this.output = e.target.files[0].path
       },
-      downloadUpdate(progress) {
-        console.log(progress);
+      downloadUpdate (progress) {
+        console.log(progress)
       }
     }
-  };
+  }
 </script>
 
 <style>
