@@ -1,7 +1,6 @@
 const isUrl = require('is-url')
 const ytlist = require('youtube-playlist')
 const parsePodcast = require('node-podcast-parser')
-const path = require('upath')
 const request = require('request')
 const ytdl = require('ytdl-core')
 

@@ -54,8 +54,8 @@
                 <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
               </div>
             </div>
-            <button  type="button" class="btn btn-sm btn-primary btn-block"> Save as default
-      </button>
+            <button type="button" class="btn btn-sm btn-primary btn-block" @click="saveDefault"> Save as default
+            </button>
           </form>
         </div>
       </div>
@@ -69,13 +69,16 @@
 
 <script>
   import Video from '@/services/videos'
-import Download from '@/services/download'
-import Split from '@/services/split'
-import {
+  import Download from '@/services/download'
+  import Split from '@/services/split'
+
+  import {
     rename
   } from 'fs'
+  const Store = require('electron-store')
+  const store = new Store()
 
-export default {
+  export default {
     name: 'download',
     data () {
       return {
@@ -95,7 +98,7 @@ export default {
           outputFolder: 'audio'
         }
       }
-  },
+    },
     mounted () {
       if (Download.get().length) {
         this.download = true
@@ -110,7 +113,7 @@ export default {
           vm.$router.push('landing-page')
         }
       })
-  },
+    },
     components: {},
     methods: {
       start () {
@@ -138,6 +141,15 @@ export default {
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
         name = removeSwift
         return name
+      },
+      saveDefault () {
+        store.set('options', this.options)
+
+        let toast = this.$toasted.success('Saved', {
+          theme: 'outline',
+          position: 'bottom-center',
+          duration: 1000
+        })
       },
       outputFolder (e) {
         this.output = e.target.files[0].path
