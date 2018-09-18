@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="dropzone">
-      <div>put files here</div>
+      <div>drop files here</div>
       <input type="file" accept="image/png, application/pdf" />
     </div>
   </div>
@@ -47,14 +47,14 @@
 
   #dropzone {
     position: relative;
-    border: 10px dotted black;
-    border-radius: 20px;
+    border: 4px solid black;
+    border-radius: 1px;
     color: black;
     font: bold 24px/200px arial;
     height: 200px;
-    margin: 30px auto;
+    margin: 10px;
     text-align: center;
-    width: 200px;
+    width: auto;
   }
 
   #dropzone.hover {

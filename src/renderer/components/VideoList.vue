@@ -1,6 +1,5 @@
 <template>
   <div id="wrapper">
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
     <div class="container">
       <div class="row">
         <div class="col overflow">

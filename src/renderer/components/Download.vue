@@ -1,6 +1,5 @@
 <template>
   <div id="wrapper">
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
     <div class="overflow">
       <div v-for="(episode,i) in episodes" :key="episode.xxx">
         <div class="custom-control custom-checkbox">
