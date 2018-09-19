@@ -1,22 +1,27 @@
 <template>
   <div id="wrapper">
     <main>
-      <div class="icon-choose-image btn btn-primary file-btn animated fadeIn">
-        <i class="fa fa-upload pr-2" aria-hidden="true"></i>
-        <span> Choose a file(s)…</span>
-        <input class="file-input" multiple type="file" name="resume" @change="handleFileChange" />
+      <div class="row">
+        <div class="col">
+          Download Youtube Playlist or Podcast from Rss feed
+          <input type="text" v-model="url" class="form-control" placeholder="youtube url or podcast rss feed" />
+          <button type="button" class="btn btn-primary" v-on:click="searchUrl">Download</button>
+        </div>
+        <div class="col">
+          <div class="icon-choose-image btn btn-primary file-btn animated fadeIn">
+            <i class="fa fa-upload pr-2" aria-hidden="true"></i>
+            <span> Choose file(s)…</span>
+            <input class="file-input" multiple type="file" name="resume" @change="handleFileChange" />
+          </div>
+          <div class="icon-choose-image btn btn-primary file-btn animated fadeIn">
+            <i class="fa fa-upload pr-2" aria-hidden="true"></i>
+            <span> Choose folder…</span>
+            <input class="file-input" type="file" name="resume" webkitdirectory directory @change="handleFileChange" />
+          </div>
+          <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
+
+        </div>
       </div>
-      <div class="icon-choose-image btn btn-primary file-btn animated fadeIn">
-        <i class="fa fa-upload pr-2" aria-hidden="true"></i>
-        <span> Choose a folder…</span>
-        <input class="file-input" type="file" name="resume" webkitdirectory directory @change="handleFileChange"/>
-      </div>
-      <br>
-      <label for="defaultFormLoginEmailEx" class="grey-text">Youtube or Podcast Rss url</label>
-      <input type="text" v-model="url" class="form-control" placeholder="url..." />
-      <button type="button" class="btn btn-primary" v-on:click="searchUrl">Primary</button>
-      <br>
-      <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
     </main>
   </div>
 </template>
@@ -40,6 +45,11 @@
     },
     methods: {
       searchUrl() {
+        let toast = this.$toasted.success('Scanning Url...', {
+          theme: 'outline',
+          position: 'bottom-center',
+          duration: 1000
+        })
         Url.getContent(this.url).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
             new Notification("Wrong url format", {
@@ -88,5 +98,37 @@
     width: 100%;
     height: 100%;
     opacity: 0;
+  }
+
+  .strike {
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .strike>span {
+    position: relative;
+    display: inline-block;
+  }
+
+  .strike>span:before,
+  .strike>span:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 9999px;
+    height: 1px;
+    background: gray;
+  }
+
+  .strike>span:before {
+    right: 100%;
+    margin-right: 15px;
+  }
+
+  .strike>span:after {
+    left: 100%;
+    margin-left: 15px;
   }
 </style>
