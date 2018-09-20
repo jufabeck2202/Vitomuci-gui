@@ -27,24 +27,24 @@
 </template>
 
 <script>
-  import FileDropdown from "./LandingPage/FileDropdown";
-  import Videos from "@/services/videos";
-  import Url from "@/services/url";
-  import Download from "@/services/download";
-  const path = require("upath");
+  import FileDropdown from './LandingPage/FileDropdown'
+import Videos from '@/services/videos'
+import Url from '@/services/url'
+import Download from '@/services/download'
+const path = require('upath')
 
-  export default {
-    name: "landing-page",
-    data() {
+export default {
+    name: 'landing-page',
+    data () {
       return {
-        url: "https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8"
-      };
-    },
+        url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8'
+      }
+  },
     components: {
       FileDropdown
     },
     methods: {
-      searchUrl() {
+      searchUrl () {
         let toast = this.$toasted.success('Scanning Url...', {
           theme: 'outline',
           position: 'bottom-center',
@@ -52,38 +52,38 @@
         })
         Url.getContent(this.url).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
-            new Notification("Wrong url format", {
-              body: "Please, insert youtube or podcast url",
+            new Notification('Wrong url format', {
+              body: 'Please, insert youtube or podcast url',
               // TODO: fix icon path
-              icon: path.join(__dirname, "/dist/imgs/logo--assets.png")
-            });
-            return;
+              icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
+            })
+            return
           }
           // switch to download screen
-          Download.set(episodes);
-          this.$router.push("download");
-        });
+          Download.set(episodes)
+          this.$router.push('download')
+        })
       },
-      handleFileChange(e) {
+      handleFileChange (e) {
         // Whenever the file changes, emit the 'input' event with the file data.
-        this.verifyFiles(e.target.files);
+        this.verifyFiles(e.target.files)
       },
-      verifyFiles(files) {
-        let verifiedFiles = Videos.verifyFiles(Videos.getFiles(files));
+      verifyFiles (files) {
+        let verifiedFiles = Videos.verifyFiles(Videos.getFiles(files))
 
         if (!verifiedFiles.length) {
-          new Notification("Wrong format", {
-            body: "Please, drop a video(s)",
+          new Notification('Wrong format', {
+            body: 'Please, drop a video(s)',
             // TODO: fix icon path
-            icon: path.join(__dirname, "/dist/imgs/logo--assets.png")
-          });
-          return;
+            icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
+          })
+          return
         }
-        Videos.set(verifiedFiles);
-        this.$router.push("videos");
+        Videos.set(verifiedFiles)
+        this.$router.push('videos')
       }
     }
-  };
+  }
 </script>
 
 <style>

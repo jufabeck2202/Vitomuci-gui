@@ -3,7 +3,6 @@
 > a gui for vitomuci
 
 ### TODO
-* check if video is removed from playlist
 
 #### Build Setup
 
