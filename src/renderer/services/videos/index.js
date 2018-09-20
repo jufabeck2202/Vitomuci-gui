@@ -1,3 +1,6 @@
+import { duration } from 'moment';
+import split from '../split';
+
 const path = require('upath')
 const fs = require('fs')
 const fileExists = require('file-exists')
@@ -12,21 +15,26 @@ let videos = []
  * @param {String} input directory or file
  * @returns {Promise} array with files
  */
-function getFiles (files) {
+async function getFiles (files) {
+  split.checkffmpeg()
   try {
     let foundFiles = []
     for (const file of files) {
       if (fs.lstatSync(file.path).isDirectory()) {
         let folderFiles = fs.readdirSync(file.path)
         for (const item of folderFiles) {
+          let duration = await split.getFileLength(file.path);
           foundFiles.push({
             name: item,
-            path: path.join(file.path, item)
+            path: path.join(file.path, item),
+            duration: duration
           })
         }
 
         return foundFiles
       } else if (fileExists.sync(file.path)) {
+        let duration = await split.getFileLength(file.path);
+        file.duration = duration
         foundFiles.push(file)
       }
       return foundFiles
@@ -65,5 +73,5 @@ export default {
   verifyFiles,
   set,
   get,
-  clear
+  clear,
 }
