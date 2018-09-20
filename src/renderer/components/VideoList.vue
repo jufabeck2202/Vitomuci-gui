@@ -1,10 +1,10 @@
 <template>
-  <div id="wrapper">
+  <div>
     <div class="container">
       <div class="row">
         <div class="col overflow">
           <div v-for="(episode) in episodes" :key="episode.xxx">
-            <li>{{options.rename?renamePreview(episode.name):episode.name}}</li>
+            <p>{{options.rename?renamePreview(episode.name):episode.name}}</p>
           </div>
         </div>
         <div class="col">
@@ -44,12 +44,12 @@
             <div class="form-row">
               <!-- Start -->
               <div class="form-group col">
-                <label for="start">Start</label>
+                <label for="start">Start at:</label>
                 <input type="text" class="form-control" id="startAt" v-model="options.startAt" placeholder="mm:ss">
               </div>
               <!-- End -->
               <div class="form-group col">
-                <label for="end">End</label>
+                <label for="end">End at:</label>
                 <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
               </div>
             </div>
@@ -71,9 +71,6 @@
   import Download from '@/services/download'
   import Split from '@/services/split'
 
-  import {
-    rename
-  } from 'fs'
   const Store = require('electron-store')
   const store = new Store()
 

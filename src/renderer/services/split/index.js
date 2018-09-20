@@ -251,5 +251,6 @@ function rename (files) {
 export default {
   split,
   checkffmpeg,
-  rename
+  rename,
+  getFileLength,
 }
