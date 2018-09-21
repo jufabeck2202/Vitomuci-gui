@@ -40,7 +40,7 @@ async function split(files, optionsObj) {
   // updating meta data, combines Clips into album
   if (options.metadata) {
     for (let i in clips) {
-      await writeMusicMetadata(clips[i].path, options.name, i + 1 + "/" + clips.length, coverPath)
+      await writeMusicMetadata(clips[i].path, options.name, ++i + "/" + clips.length, coverPath)
     }
   }
 
@@ -184,6 +184,7 @@ function getFileLength(file) {
  * @param {String} cover
  */
 function writeMusicMetadata(file, compilationName, track, cover) {
+  console.log(track)
   return new Promise((resolve, reject) => {
     let isodate = new Date()
     let data = {
@@ -198,7 +199,6 @@ function writeMusicMetadata(file, compilationName, track, cover) {
     let attachments = options.cover ? {
       attachments: [cover]
     } : {}
-    console.log(file)
     ffmetadata.write(file, data, attachments, function (err) {
       if (err) reject(err)
       resolve()
