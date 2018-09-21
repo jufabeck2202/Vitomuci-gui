@@ -1,6 +1,3 @@
-import {
-  clearScreenDown
-} from 'readline'
 
 const isUrl = require('is-url')
 const ytlist = require('youtube-playlist')

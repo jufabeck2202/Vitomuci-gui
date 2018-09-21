@@ -82,6 +82,7 @@
         download: false,
         episodes: [],
         averageDuration: 0,
+        info:"",
         options: {
           startAt: '00:00',
           endAt: '00:00',
@@ -122,6 +123,7 @@
         if (this.download) {
           Download.download(this.options.outputPath, this.downloadUpdate).then(
             downloadedFiles => {
+              console.log(downloadedFiles)
               this.startSplitting(downloadedFiles)
             }
           )

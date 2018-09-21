@@ -131,7 +131,7 @@ async function splitTrack(outputDirectory, file, duration) {
 function getSegmentName(name, start, end) {
   let ext = path.extname(name)
   name = path.removeExt(name, ext)
-  return `${name}_${secondsToTimeString(start)}-${secondsToTimeString(end)}.mp3`
+  return `${name}_${secondsToTimeString(start)}-${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '')
 }
 
 /**
@@ -184,7 +184,6 @@ function getFileLength(file) {
  * @param {String} cover
  */
 function writeMusicMetadata(file, compilationName, track, cover) {
-  console.log(track)
   return new Promise((resolve, reject) => {
     let isodate = new Date()
     let data = {
@@ -217,7 +216,7 @@ function getCoverPicture(file, baseDirectory, picTime) {
   return new Promise((resolve, reject) => {
     ffmpeg(file)
       .screenshots({
-        timestamps: [picTime],
+        timestamps: [picTime+10],
         filename: path.join(baseDirectory, 'cover.jpg'),
         size: '320x240'
       }).on('end', function (stdout, stderr) {
