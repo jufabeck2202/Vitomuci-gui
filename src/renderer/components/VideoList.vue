@@ -120,19 +120,19 @@
     methods: {
       start () {
         if (this.download) {
-          Download.download(this.output, this.downloadUpdate).then(
+          Download.download(this.options.outputPath, this.downloadUpdate).then(
             downloadedFiles => {
-              this.startghting(downloadedFiles)
+              this.startSplitting(downloadedFiles)
             }
           )
         } else {
           this.startSplitting(this.episodes)
         }
       },
-      startSplitting (downloadedFiles) {
+      startSplitting (files) {
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
-        Split.split(downloadedFiles, this.options).then(clips => {
+        Split.split(files, this.options).then(clips => {
           console.log(clips)
         })
       },
@@ -162,9 +162,9 @@
       },
       getAverageDuration () {
         let total = 0
-        console.log(this.episodes)
         for (const ep of this.episodes) {
-          total += Number(ep.duration)
+          if(ep.duration)
+            total += Number(ep.duration)
         }
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },

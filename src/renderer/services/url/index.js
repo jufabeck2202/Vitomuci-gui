@@ -77,8 +77,12 @@ async function getContent (url) {
       // check if single video or playlist
       try {
         episodes = await getPlaylist(url)
-        for (const episode of episodes) {
-          episode.duration = await getVideoDuration(episode.url)
+        for (const i in episodes) {
+          try {
+            episodes[i].duration = await getVideoDuration(episodes[i].url)
+          } catch (error) {
+            episodes.splice(i, 1)
+          }
         }
       } catch (error) {
         throw error
