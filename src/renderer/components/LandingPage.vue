@@ -35,7 +35,7 @@
 
   export default {
     name: 'landing-page',
-    data() {
+    data () {
       return {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8'
       }
@@ -44,7 +44,7 @@
       FileDropdown
     },
     methods: {
-      searchUrl() {
+      searchUrl () {
         let toast = this.$toasted.success('Scanning Url...', {
           theme: 'outline',
           position: 'bottom-center',
@@ -64,11 +64,11 @@
           this.$router.push('download')
         })
       },
-      handleFileChange(e) {
+      handleFileChange (e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles(newFiles) {
+      verifyFiles (newFiles) {
         Videos.getFiles(newFiles).then(files => {
           let verifiedFiles = Videos.verifyFiles(files)
           if (!verifiedFiles.length) {

@@ -1,5 +1,5 @@
-import { duration } from 'moment';
-import split from '../split';
+import { duration } from 'moment'
+import split from '../split'
 
 const path = require('upath')
 const fs = require('fs')
@@ -23,7 +23,7 @@ async function getFiles (files) {
       if (fs.lstatSync(file.path).isDirectory()) {
         let folderFiles = fs.readdirSync(file.path)
         for (const item of folderFiles) {
-          let duration = await split.getFileLength(file.path);
+          let duration = await split.getFileLength(file.path)
           foundFiles.push({
             name: item,
             path: path.join(file.path, item),
@@ -33,7 +33,7 @@ async function getFiles (files) {
 
         return foundFiles
       } else if (fileExists.sync(file.path)) {
-        let duration = await split.getFileLength(file.path);
+        let duration = await split.getFileLength(file.path)
         file.duration = duration
         foundFiles.push(file)
       }
@@ -73,5 +73,5 @@ export default {
   verifyFiles,
   set,
   get,
-  clear,
+  clear
 }

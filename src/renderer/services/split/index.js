@@ -100,7 +100,7 @@ async function splitTrack (outputDirectory, file, duration) {
   }
 
   let durationIndex = options.startAt
-  while ((durationIndex + options.duration) <= (duration - options.endAt)) {
+  while ((durationIndex + options.duration) <= (options.endAt)) {
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
@@ -108,8 +108,9 @@ async function splitTrack (outputDirectory, file, duration) {
     })
     durationIndex += options.duration
   }
-  if (((duration - options.endAt) - durationIndex) >= 30) {
-    await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, options.duration)
+  //still add 1 min clips
+  if (((options.endAt) - durationIndex) >= 60) {
+    await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, options.endAt)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
       path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
@@ -253,4 +254,5 @@ export default {
   checkffmpeg,
   rename,
   getFileLength,
+  secondsToTimeString
 }
