@@ -9,8 +9,10 @@ const chalk = require('chalk')
 let ffmetadata
 let options
 let clips = []
+let coverPath = ""
 
-async function split (output, files, optionsObj) {
+
+async function split(output, files, optionsObj) {
   options = optionsObj
   // convert spring to seconds
   options.startAt = stringToSeconds(options.startAt)
@@ -30,13 +32,15 @@ async function split (output, files, optionsObj) {
     options.name = files[0].name
   }
   // take cover picture
-  if (options.cover) { coverPath = await getCoverPicture(files[0], output, options.startAt) }
+  if (options.cover) {
+    coverPath = await getCoverPicture(files[0].path, output, options.startAt)
+  }
 
   // updating meta data, combines Clips into album
   if (options.metadata) {
-    files = fs.readdirSync(outputDirectory)
-    for (let file of files) {
-      await writeMusicMetadata(path.join(outputDirectory, file), options.name, coverPath)
+    console.log("Metadata Name " + options.name)
+    for (let i in clips) {
+      await writeMusicMetadata(clips[i].path, options.name, i + 1 + "/" + clips.length, coverPath)
     }
   }
 
@@ -48,7 +52,7 @@ async function split (output, files, optionsObj) {
  * Sets the required ffmpeg path to all
  * packages that require it
  */
-function checkffmpeg () {
+function checkffmpeg() {
   ffmpeg.setFfmpegPath(ffmpegPath)
   ffmpeg.setFfprobePath(ffprobePath)
   process.env.FFMPEG_PATH = ffmpegPath
@@ -67,7 +71,7 @@ function checkffmpeg () {
  * @param {Number} start
  * @param {Number} duration
  */
-function segmentMp3 (input, output, start, duration) {
+function segmentMp3(input, output, start, duration) {
   return new Promise((resolve, reject) => {
     ffmpeg(input).seekInput(start).duration(duration).save(output)
       .on('end', function (stdout, stderr) {
@@ -86,7 +90,7 @@ function segmentMp3 (input, output, start, duration) {
  * @param {String} name
  * @param {Number} duration
  */
-async function splitTrack (outputDirectory, file, duration) {
+async function splitTrack(outputDirectory, file, duration) {
   // if you dont want seprate clips
   if (options.full) {
     let ext = path.extname(file.name)
@@ -124,7 +128,7 @@ async function splitTrack (outputDirectory, file, duration) {
  * @param {Number} start
  * @param {Number} end
  */
-function getSegmentName (name, start, end) {
+function getSegmentName(name, start, end) {
   let ext = path.extname(name)
   name = path.removeExt(name, ext)
   return `${name}_${secondsToTimeString(start)}-${secondsToTimeString(end)}.mp3`
@@ -134,7 +138,7 @@ function getSegmentName (name, start, end) {
  * Converts seconds into a ISO time string
  * @param {Number} seconds
  */
-function secondsToTimeString (seconds) {
+function secondsToTimeString(seconds) {
   return new Date(seconds * 1000).toISOString().substr(14, 5).replace(':', '.')
 }
 
@@ -142,14 +146,18 @@ function secondsToTimeString (seconds) {
  * Returns seconds from strings like 00:00 or 10000
  * @param {String} timeString
  */
-function stringToSeconds (timeString) {
+function stringToSeconds(timeString) {
   let seconds = 0
-  if (!isNaN(timeString)) { seconds = timeString } else if (typeof timeString === 'string' || timeString instanceof String) {
+  if (!isNaN(timeString)) {
+    seconds = timeString
+  } else if (typeof timeString === 'string' || timeString instanceof String) {
     if (timeString.indexOf(':') > -1) {
       let ms = timeString.split(':')
       seconds = (+ms[0]) * 60 + (+ms[1])
     }
-  } else { throw timeString + ' is not a number, please only use formats like 123 or 1:30' }
+  } else {
+    throw timeString + ' is not a number, please only use formats like 123 or 1:30'
+  }
 
   return Number(seconds)
 }
@@ -159,7 +167,7 @@ function stringToSeconds (timeString) {
  * media file
  * @param {*} file
  */
-function getFileLength (file) {
+function getFileLength(file) {
   return new Promise((resolve, reject) => {
     ffprobe(file, (err, probeData) => {
       if (err) reject(err)
@@ -175,21 +183,22 @@ function getFileLength (file) {
  * @param {String} compilationName
  * @param {String} cover
  */
-function writeMusicMetadata (file, compilationName, cover) {
+function writeMusicMetadata(file, compilationName, track, cover) {
   return new Promise((resolve, reject) => {
     let isodate = new Date()
     let data = {
       artist: compilationName,
-      genre: 'speech',
+      genre: 'Speech',
       disc: 1,
       album: compilationName,
-      date: isodate
+      date: isodate,
+      track: track
     }
 
     let attachments = options.cover ? {
       attachments: [cover]
     } : {}
-
+    console.log(file)
     ffmetadata.write(file, data, attachments, function (err) {
       if (err) reject(err)
       resolve()
@@ -204,7 +213,7 @@ function writeMusicMetadata (file, compilationName, cover) {
  * @param {String} baseDirectory
  * @param {String} picTime
  */
-function getCoverPicture (file, baseDirectory, picTime) {
+function getCoverPicture(file, baseDirectory, picTime) {
   return new Promise((resolve, reject) => {
     ffmpeg(file)
       .screenshots({
@@ -221,7 +230,7 @@ function getCoverPicture (file, baseDirectory, picTime) {
  * Promise wrap for deleting a file
  * @param {*} file
  */
-function deleteFile (file) {
+function deleteFile(file) {
   return new Promise((resolve, reject) => {
     fs.unlink(file, function (error) {
       if (error) {
@@ -237,7 +246,7 @@ function deleteFile (file) {
  * Removes Brackets and the text inside them
  * @param {Array} files
  */
-function rename (files) {
+function rename(files) {
   let renamedFiles = []
   files.forEach(function (file) {
     let removeRound = basename.replace(/ *\([^)]*\) */g, '')
