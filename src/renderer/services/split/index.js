@@ -8,18 +8,19 @@ const chalk = require('chalk')
 
 let ffmetadata
 let options
+let output
 let clips = []
 let coverPath = ""
 
 
-async function split(output, files, optionsObj) {
+async function split(files, optionsObj) {
   options = optionsObj
   // convert spring to seconds
   options.startAt = stringToSeconds(options.startAt)
   options.endAt = stringToSeconds(options.endAt)
   options.duration = stringToSeconds(options.duration)
   // Split track
-  output = path.join(output, options.outputFolder)
+  output = path.join(options.outputPath, options.outputFolder)
   fs.mkdirSync(output)
   for (let file of files) {
     let seconds = await getFileLength(file.path)
@@ -38,7 +39,6 @@ async function split(output, files, optionsObj) {
 
   // updating meta data, combines Clips into album
   if (options.metadata) {
-    console.log("Metadata Name " + options.name)
     for (let i in clips) {
       await writeMusicMetadata(clips[i].path, options.name, i + 1 + "/" + clips.length, coverPath)
     }

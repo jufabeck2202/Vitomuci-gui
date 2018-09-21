@@ -62,7 +62,7 @@
     </div>
     <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
 
-    <button :disabled="output==null" type="button" class="btn btn-primary btn-block" @click="start">
+    <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
   </div>
 </template>∏
@@ -81,7 +81,6 @@
       return {
         download: false,
         episodes: [],
-        output: null,
         averageDuration: 0,
         options: {
           startAt: '00:00',
@@ -93,6 +92,7 @@
           rename: false,
           full: false,
           name: '',
+          outputPath:null,
           outputFolder: 'audio'
         }
       }
@@ -122,7 +122,7 @@
         if (this.download) {
           Download.download(this.output, this.downloadUpdate).then(
             downloadedFiles => {
-              this.startSplitting(downloadedFiles)
+              this.startghting(downloadedFiles)
             }
           )
         } else {
@@ -132,7 +132,7 @@
       startSplitting (downloadedFiles) {
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
-        Split.split(this.output, downloadedFiles, this.options).then(clips => {
+        Split.split(downloadedFiles, this.options).then(clips => {
           console.log(clips)
         })
       },
@@ -169,7 +169,8 @@
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
       outputFolder (e) {
-        this.output = e.target.files[0].path
+        this.options.outputPath = e.target.files[0].path
+
       },
       downloadUpdate (progress) {
         console.log(progress)
