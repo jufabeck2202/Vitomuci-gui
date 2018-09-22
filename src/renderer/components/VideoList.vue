@@ -64,8 +64,9 @@
 
     <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
+      <p>{{info}}</p>
   </div>
-</template>∏
+</template>
 
 <script>
   import Video from '@/services/videos'

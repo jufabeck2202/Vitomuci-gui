@@ -114,7 +114,7 @@ async function splitTrack(outputDirectory, file, duration) {
   }
   //still add 1 min clips
   if (((duration - options.endAt) - durationIndex) >= 60) {
-    await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, options.duration)
+    await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, (duration - options.endAt) - durationIndex)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
       path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt))
