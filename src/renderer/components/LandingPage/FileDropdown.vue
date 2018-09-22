@@ -2,7 +2,7 @@
   <div>
     <div id="dropzone">
       <div>drop files here</div>
-      <input type="file" accept="image/png, application/pdf" />
+      <input type="file" multiple />
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@
     methods: {
       onDrop (e) {
         const files = e.dataTransfer.files
-        const videos = []
         this.dropFiles(files)
       },
       onDragover () {

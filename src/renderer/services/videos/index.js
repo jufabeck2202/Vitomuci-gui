@@ -1,4 +1,6 @@
-import { duration } from 'moment'
+import {
+  duration
+} from 'moment'
 import split from '../split'
 
 const path = require('upath')
@@ -15,7 +17,7 @@ let videos = []
  * @param {String} input directory or file
  * @returns {Promise} array with files
  */
-async function getFiles (files) {
+async function getFiles(files) {
   split.checkffmpeg()
   try {
     let foundFiles = []
@@ -30,15 +32,14 @@ async function getFiles (files) {
             duration: duration
           })
         }
-
         return foundFiles
       } else if (fileExists.sync(file.path)) {
         let duration = await split.getFileLength(file.path)
         file.duration = duration
         foundFiles.push(file)
       }
-      return foundFiles
     }
+    return foundFiles.sort((a, b) => a.name.localeCompare(b.name))
   } catch (error) {}
 }
 
@@ -46,7 +47,7 @@ async function getFiles (files) {
  * Checks if found files are media files
  * @param {Array} files array of files
  */
-function verifyFiles (files) {
+function verifyFiles(files) {
   let mediaFiles = []
   files.forEach(file => {
     if (videoFormats.includes(path.extname(file.path))) {
@@ -56,15 +57,15 @@ function verifyFiles (files) {
   return mediaFiles
 }
 
-function set (v) {
+function set(v) {
   videos = v
 }
 
-function get () {
+function get() {
   return videos
 }
 
-function clear () {
+function clear() {
   videos = []
 }
 

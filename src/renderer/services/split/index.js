@@ -104,7 +104,7 @@ async function splitTrack(outputDirectory, file, duration) {
   }
 
   let durationIndex = options.startAt
-  while ((durationIndex + options.duration) <= (options.endAt)) {
+  while ((durationIndex + options.duration) <= (duration - options.endAt)) {
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
@@ -113,8 +113,8 @@ async function splitTrack(outputDirectory, file, duration) {
     durationIndex += options.duration
   }
   //still add 1 min clips
-  if (((options.endAt) - durationIndex) >= 60) {
-    await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, options.endAt)), durationIndex, options.duration)
+  if (((duration - options.endAt) - durationIndex) >= 60) {
+    await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
       path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
@@ -131,6 +131,7 @@ async function splitTrack(outputDirectory, file, duration) {
 function getSegmentName(name, start, end) {
   let ext = path.extname(name)
   name = path.removeExt(name, ext)
+  r
   return `${name}_${secondsToTimeString(start)}-${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '')
 }
 
@@ -216,7 +217,7 @@ function getCoverPicture(file, baseDirectory, picTime) {
   return new Promise((resolve, reject) => {
     ffmpeg(file)
       .screenshots({
-        timestamps: [picTime+10],
+        timestamps: [picTime + 10],
         filename: path.join(baseDirectory, 'cover.jpg'),
         size: '320x240'
       }).on('end', function (stdout, stderr) {
