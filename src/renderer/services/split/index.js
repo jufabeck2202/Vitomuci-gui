@@ -131,7 +131,6 @@ async function splitTrack(outputDirectory, file, duration) {
 function getSegmentName(name, start, end) {
   let ext = path.extname(name)
   name = path.removeExt(name, ext)
-  r
   return `${name}_${secondsToTimeString(start)}-${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '')
 }
 
