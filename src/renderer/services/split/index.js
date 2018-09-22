@@ -117,7 +117,7 @@ async function splitTrack(outputDirectory, file, duration) {
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
-      path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
+      path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt))
     })
   }
 }
