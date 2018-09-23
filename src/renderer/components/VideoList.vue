@@ -61,10 +61,12 @@
       </div>
     </div>
     <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
-
     <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
-      <p>{{info}}</p>
+    <p>{{info}}</p>
+    <modal name="hello-world">
+      hello, world!
+    </modal>
   </div>
 </template>
 
@@ -78,7 +80,7 @@
 
   export default {
     name: 'download',
-    data () {
+    data() {
       return {
         download: false,
         episodes: [],
@@ -99,7 +101,7 @@
         }
       }
     },
-    mounted () {
+    mounted() {
       this.getDefault()
 
       if (Download.get().length) {
@@ -110,8 +112,8 @@
       }
 
       this.getAverageDuration()
-  },
-    beforeRouteEnter (to, from, next) {
+    },
+    beforeRouteEnter(to, from, next) {
       next(vm => {
         if (!Video.get().length && !Download.get().length) {
           vm.$router.push('landing-page')
@@ -120,7 +122,7 @@
     },
     components: {},
     methods: {
-      start () {
+      start() {
         if (this.download) {
           Download.download(this.options.outputPath, this.downloadUpdate).then(
             downloadedFiles => {
@@ -132,7 +134,9 @@
           this.startSplitting(this.episodes)
         }
       },
-      startSplitting (files) {
+      startSplitting(files) {
+            this.$modal.show('hello-world');
+
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options).then(clips => {
@@ -140,7 +144,7 @@
         })
       },
       // preview rename
-      renamePreview (name) {
+      renamePreview(name) {
         let removeRound = name.replace(/ *\([^)]*\) */g, '')
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
@@ -148,7 +152,7 @@
         name = removeRaw
         return name.trim()
       },
-      saveDefault () {
+      saveDefault() {
         store.set('options', this.options)
 
         let toast = this.$toasted.success('Saved', {
@@ -157,23 +161,25 @@
           duration: 1000
         })
       },
-      getDefault () {
+      getDefault() {
         let options = store.get('options')
         if (options) {
           this.options = options
         }
       },
-      getAverageDuration () {
+      getAverageDuration() {
         let total = 0
         for (const ep of this.episodes) {
-          if (ep.duration) { total += Number(ep.duration) }
+          if (ep.duration) {
+            total += Number(ep.duration)
+          }
         }
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
-      outputFolder (e) {
+      outputFolder(e) {
         this.options.outputPath = e.target.files[0].path
       },
-      downloadUpdate (progress) {
+      downloadUpdate(progress) {
         console.log(progress)
       }
     }
