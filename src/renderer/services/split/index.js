@@ -19,6 +19,11 @@ async function split(files, optionsObj) {
   options.startAt = stringToSeconds(options.startAt)
   options.endAt = stringToSeconds(options.endAt)
   options.duration = stringToSeconds(options.duration)
+  //rename
+  if (options.rename)
+    files = rename(files)
+  console.log(files)
+
   // Split track
   output = path.join(options.outputPath, options.outputFolder)
   fs.mkdirSync(output)
@@ -246,21 +251,23 @@ function deleteFile(file) {
  * @param {Array} files
  */
 function rename(files) {
-  let renamedFiles = []
-  files.forEach(function (file) {
-    let removeRound = basename.replace(/ *\([^)]*\) */g, '')
+  let renamedFiles=[]
+  for (const file of files) {
+    let removeRound = file.name.replace(/ *\([^)]*\) */g, '')
     let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
-    let newName = path.join(curDir, removeSquare)
-    renamedFiles.push(newName)
-    fs.renameSync(file, newName)
-  })
+    let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
+    let removeRaw = removeSwift.replace(" RAW", "");
+
+    let newPath = path.join(path.dirname(file.path), removeRaw + path.extname(file.path))
+    fs.renameSync(file.path, newPath)
+    renamedFiles.push({name:removeRaw,path:newPath})
+  }
   return renamedFiles
 }
 
 export default {
   split,
   checkffmpeg,
-  rename,
   getFileLength,
   secondsToTimeString
 }
