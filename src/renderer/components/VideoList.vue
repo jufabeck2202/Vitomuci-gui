@@ -83,7 +83,7 @@
         download: false,
         episodes: [],
         averageDuration: 0,
-        info:"",
+        info: '',
         options: {
           startAt: '00:00',
           endAt: '00:00',
@@ -94,7 +94,7 @@
           rename: false,
           full: false,
           name: '',
-          outputPath:null,
+          outputPath: null,
           outputFolder: 'audio'
         }
       }
@@ -144,9 +144,9 @@
         let removeRound = name.replace(/ *\([^)]*\) */g, '')
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
-        let removeRaw = removeSwift.replace(" RAW","");
+        let removeRaw = removeSwift.replace(' RAW', '')
         name = removeRaw
-        return name.trim(); 
+        return name.trim()
       },
       saveDefault () {
         store.set('options', this.options)
@@ -166,14 +166,12 @@
       getAverageDuration () {
         let total = 0
         for (const ep of this.episodes) {
-          if(ep.duration)
-            total += Number(ep.duration)
+          if (ep.duration) { total += Number(ep.duration) }
         }
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
       outputFolder (e) {
         this.options.outputPath = e.target.files[0].path
-
       },
       downloadUpdate (progress) {
         console.log(progress)
