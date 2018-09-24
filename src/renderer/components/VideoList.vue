@@ -68,7 +68,7 @@
     <modal name="progressModal"  height="auto" >
       <h4>{{download ? "Downloading...":"Converting..."}}</h4>
       <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': progress.progress+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
       {{progress.info}}
     </modal>
@@ -90,7 +90,7 @@
         download: false,
         episodes: [],
         averageDuration: 0,
-        progress:{progress:10,info:"start"},
+        progress:{progress:3,info:"start"},
         options: {
           startAt: '00:00',
           endAt: '00:00',
