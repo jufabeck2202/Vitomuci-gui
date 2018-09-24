@@ -64,7 +64,13 @@
     <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
     <p>{{info}}</p>
-    <v-dialog/>
+    <v-dialog />
+    <modal name="progressModal"  height="auto" >
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <p>{{info}}</p>
+    </modal>
   </div>
 </template>
 
@@ -83,7 +89,7 @@
         download: false,
         episodes: [],
         averageDuration: 0,
-        info: '',
+        info: 'Start',
         options: {
           startAt: '00:00',
           endAt: '00:00',
@@ -101,6 +107,7 @@
     },
     mounted() {
       this.getDefault()
+      this.$modal.show('progressModal')
 
       if (Download.get().length) {
         this.download = true
@@ -122,9 +129,8 @@
     methods: {
       start() {
         if (this.download) {
-          Download.download(this.options.outputPath, this.downloadUpdate).then(
+          Download.download(this.options.outputPath).then(
             downloadedFiles => {
-              console.log(downloadedFiles)
               this.startSplitting(downloadedFiles)
             }
           )
@@ -132,7 +138,7 @@
           this.startSplitting(this.episodes)
         }
       },
-      startSplitting(files) {
+      folderExists() {
         this.$modal.show('dialog', {
           title: 'output folder audio already exist',
           text: '',
@@ -152,6 +158,9 @@
             }
           ]
         })
+      },
+
+      startSplitting(files) {
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options).then(clips => {
@@ -194,9 +203,6 @@
       outputFolder(e) {
         this.options.outputPath = e.target.files[0].path
       },
-      downloadUpdate(progress) {
-        console.log(progress)
-      }
     }
   }
 </script>
