@@ -9,7 +9,7 @@ import VModal from 'vue-js-modal'
 
 Vue.use(Toasted)
 Vue.use(Vuex)
-Vue.use(VModal)
+Vue.use(VModal, { dialog: true })
 
 export default new Vuex.Store({
   modules,

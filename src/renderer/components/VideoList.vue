@@ -64,9 +64,7 @@
     <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
     <p>{{info}}</p>
-    <modal name="hello-world">
-      hello, world!
-    </modal>
+    <v-dialog/>
   </div>
 </template>
 
@@ -135,8 +133,25 @@
         }
       },
       startSplitting(files) {
-            this.$modal.show('hello-world');
-
+        this.$modal.show('dialog', {
+          title: 'output folder audio already exist',
+          text: '',
+          buttons: [{
+              title: 'replace folder',
+              handler: () => {
+                alert('Woot!')
+              }
+            },
+            {
+              title: 'use existing folder', // Button title
+              default: true, // Will be triggered by default if 'Enter' pressed.
+              handler: () => {} // Button click handler
+            },
+            {
+              title: 'Close'
+            }
+          ]
+        })
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options).then(clips => {
