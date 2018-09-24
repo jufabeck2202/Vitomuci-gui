@@ -11,9 +11,11 @@ let options
 let output
 let clips = []
 let coverPath = ''
+let progress
 
-async function split (files, optionsObj) {
+async function split (files, optionsObj, progressObj) {
   options = optionsObj
+  progress = progressObj   
   // convert spring to seconds
   options.startAt = stringToSeconds(options.startAt)
   options.endAt = stringToSeconds(options.endAt)

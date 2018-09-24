@@ -63,13 +63,14 @@
     <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
     <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
-    <p>{{info}}</p>
+    <p>{{progress.info}}</p>
     <v-dialog />
     <modal name="progressModal"  height="auto" >
+      <h4>{{download ? "Downloading...":"Converting..."}}</h4>
       <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': progress.progress+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
-      <p>{{info}}</p>
+      {{progress.info}}
     </modal>
   </div>
 </template>
@@ -89,7 +90,7 @@
         download: false,
         episodes: [],
         averageDuration: 0,
-        info: 'Start',
+        progress:{progress:10,info:"start"},
         options: {
           startAt: '00:00',
           endAt: '00:00',
@@ -131,6 +132,7 @@
         if (this.download) {
           Download.download(this.options.outputPath).then(
             downloadedFiles => {
+              this.download = false
               this.startSplitting(downloadedFiles)
             }
           )
@@ -163,7 +165,7 @@
       startSplitting(files) {
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
-        Split.split(files, this.options).then(clips => {
+        Split.split(files, this.options, this.progress).then(clips => {
           console.log(clips)
         })
       },
