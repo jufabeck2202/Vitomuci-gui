@@ -17,23 +17,26 @@ function get () {
 function clear () {
   episodes = []
 }
-async function download (output) {
+async function download (output,progressObj) {
   let downloadedEpisodes = []
+  progress = progressObj
   if (episodes[0].url.includes('youtube')) {
     for (let episode of episodes) {
       if (ytdl.validateURL(episode.url)) {
         let title = episode.name.replace(/[/\\?%*:|"<>&]/g, '-') // make sure there are no illeagale characters
+        progress.info = `downloading ${episode.name}`
         await downloadVideo(episode.url, path.join(output, title + '.mp4'))
         downloadedEpisodes.push({name: episode.name, path: path.join(output, title + '.mp4')})
-        progress++
+        progress.progress++
       }
     }
     return downloadedEpisodes
   } else {
     for (const episode of episodes) {
+      progress.info = `downloading ${episode.name}`
       await downloadPodcast(episode.url, path.join(output, episode.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp3'))
       downloadedEpisodes.push({name: episode.name, path: path.join(output, episode.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp4')})
-      progress++
+      progress.progress++
     }
     return downloadedEpisodes
   }

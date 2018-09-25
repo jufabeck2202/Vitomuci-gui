@@ -76,10 +76,10 @@
       <div class="box">
         <h4>{{download ? "Downloading...":"Converting..."}}</h4>
         <div class="progress">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }"
-            aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0"
+            :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-       {{progress.info}}
+        {{progress.info}}
       </div>
     </modal>
   </div>
@@ -144,11 +144,13 @@
       start() {
         this.$modal.show('progress')
         if (this.download) {
-          Download.download(this.outputPath).then(
+          Download.download(this.outputPath, this.progress).then(
             downloadedFiles => {
               this.download = false
-              this.progress.progress = 0
-              
+              this.progress.progress = 0              
+              this.progress.info = "start converting"
+
+
               this.startSplitting(downloadedFiles)
             }
           )
@@ -243,8 +245,8 @@
     height: 100%;
     opacity: 0;
   }
-  .box{
+
+  .box {
     text-align: center
   }
-  
 </style>
