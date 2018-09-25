@@ -144,7 +144,11 @@ function getSegmentName (name, start, end) {
  * @param {Number} seconds
  */
 function secondsToTimeString (seconds) {
-  return new Date(seconds * 1000).toISOString().substr(14, 5).replace(':', '.')
+  let time = new Date(seconds * 1000).toISOString()//.substr(11, 5)
+  console.log(time)
+  if(time.substr(12,1)=="0")
+    return time.substr(14,5)
+  else return time.substr(11,8)
 }
 
 /**
