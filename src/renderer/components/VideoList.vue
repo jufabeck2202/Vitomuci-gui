@@ -69,7 +69,6 @@
     </div>
     <button :disabled="outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
-    <p>{{progress.info}}</p>
     <v-dialog />
     <modal name="progressModal" height="auto">
       <h4>{{download ? "Downloading...":"Converting..."}}</h4>
@@ -77,6 +76,7 @@
         <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }"
           aria-valuemin="0" aria-valuemax="100"></div>
       </div>
+        <p>{{progress.info}}</p>
     </modal>
   </div>
 </template>

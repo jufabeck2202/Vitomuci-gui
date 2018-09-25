@@ -43,6 +43,7 @@ async function split (files, optionsObj, outputPath, progressObj) {
 
   // updating meta data, combines Clips into album
   if (options.metadata) {
+    modal.info = `updating metadata of ${clips.length} files` 
     for (let i in clips) {
       await writeMusicMetadata(clips[i].path, options.name, ++i + '/' + clips.length, coverPath)
     }
@@ -94,6 +95,7 @@ function segmentMp3 (input, output, start, duration) {
  * @param {Number} duration
  */
 async function splitTrack (outputDirectory, file, duration) {
+  modal.info = `converting ${file.name}` 
   // if you dont want seprate clips
   if (options.full) {
     let ext = path.extname(file.name)
@@ -107,21 +109,26 @@ async function splitTrack (outputDirectory, file, duration) {
   }
 
   let durationIndex = options.startAt
+  let parts = 0
   while ((durationIndex + options.duration) <= (duration - options.endAt)) {
+    modal.info = `converting ${file.name} splitting into ${parts} parts` 
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
       path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
     })
     durationIndex += options.duration
+    parts++
   }
   // still add 1 min clips
   if (((duration - options.endAt) - durationIndex) >= 60) {
+    modal.info = `converting ${file.name} splitting into ${parts} parts` 
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, (duration - options.endAt) - durationIndex)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
       path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt))
     })
+    parts++
   }
 }
 
