@@ -10,7 +10,7 @@
         <div class="col">
           <!-- Default form login -->
           <form class="text-center">
-            <p>{{averageDuration}} min average duration </p>
+            <p>Average Duration: {{averageDuration}}</p>
             <!-- Create cover checkbox-->
             <div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" v-model="options.cover" id="cover">
@@ -60,17 +60,23 @@
         </div>
       </div>
     </div>
-    <input type="file" class="form-control" webkitdirectory directory @change="outputFolder">
-    <button :disabled="options.outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
+    <div class="btn btn-primary file-btn">
+      <span>select folder</span>
+      <input type="file" class="file-input" webkitdirectory directory @change="outputFolder" />
+    </div>
+    <div class="form-group col">
+      <input type="text" class="form-control" id="endAt" v-model="outputPath" placeholder="please select a folder">
+    </div>
+    <button :disabled="outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
     <p>{{progress.info}}</p>
     <v-dialog />
-    <modal name="progressModal"  height="auto" >
+    <modal name="progressModal" height="auto">
       <h4>{{download ? "Downloading...":"Converting..."}}</h4>
       <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }"
+          aria-valuemin="0" aria-valuemax="100"></div>
       </div>
-      {{progress.info}}
     </modal>
   </div>
 </template>
@@ -81,6 +87,7 @@
   import Split from '@/services/split'
 
   const Store = require('electron-store')
+  const path = require("upath")
   const store = new Store()
 
   export default {
@@ -90,7 +97,11 @@
         download: false,
         episodes: [],
         averageDuration: 0,
-        progress:{progress:3,info:"start"},
+        outputPath:"",
+        progress: {
+          progress: 3,
+          info: "start"
+        },
         options: {
           startAt: '00:00',
           endAt: '00:00',
@@ -101,20 +112,18 @@
           rename: false,
           full: false,
           name: '',
-          outputPath: null,
-          outputFolder: 'audio'
+          outputFolder:"audio"
         }
       }
     },
     mounted() {
       this.getDefault()
-      this.$modal.show('progressModal')
-
       if (Download.get().length) {
         this.download = true
         this.episodes = Download.get()
       } else {
         this.episodes = Video.get()
+        this.outputPath = path.dirname(this.episodes[0].path)
       }
 
       this.getAverageDuration()
@@ -129,8 +138,9 @@
     components: {},
     methods: {
       start() {
+        this.$modal.show('progressModal')
         if (this.download) {
-          Download.download(this.options.outputPath).then(
+          Download.download(this.outputPath).then(
             downloadedFiles => {
               this.download = false
               this.startSplitting(downloadedFiles)
@@ -165,7 +175,7 @@
       startSplitting(files) {
         Split.checkffmpeg()
         this.options.full = this.options.split === 'full'
-        Split.split(files, this.options, this.progress).then(clips => {
+        Split.split(files, this.options, this.outputPath, this.progress).then(clips => {
           console.log(clips)
         })
       },
@@ -203,7 +213,7 @@
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
       outputFolder(e) {
-        this.options.outputPath = e.target.files[0].path
+        this.outputPath = e.target.files[0].path
       },
     }
   }
@@ -213,5 +223,18 @@
   .overflow {
     overflow: scroll;
     height: 300px;
+  }
+
+  .file-btn {
+    position: relative;
+  }
+
+  .file-btn input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
   }
 </style>

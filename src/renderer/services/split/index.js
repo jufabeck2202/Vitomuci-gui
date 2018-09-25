@@ -13,7 +13,7 @@ let clips = []
 let coverPath = ''
 let progress
 
-async function split (files, optionsObj, progressObj) {
+async function split (files, optionsObj, outputPath, progressObj) {
   options = optionsObj
   progress = progressObj   
   // convert spring to seconds
@@ -25,7 +25,7 @@ async function split (files, optionsObj, progressObj) {
   console.log(files)
 
   // Split track
-  output = path.join(options.outputPath, options.outputFolder)
+  output = path.join(outputPath, options.outputFolder)
   fs.mkdirSync(output)
   for (let file of files) {
     let seconds = await getFileLength(file.path)
@@ -135,7 +135,7 @@ async function splitTrack (outputDirectory, file, duration) {
  */
 function getSegmentName (name, start, end) {
   let ext = path.extname(name)
-  return `${path.basename(name,ext)}_${secondsToTimeString(start)}_${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '-')
+  return `${path.basename(name,ext)}_${secondsToTimeString(start)} to ${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '-')
 }
 
 /**
