@@ -135,8 +135,7 @@ async function splitTrack (outputDirectory, file, duration) {
  */
 function getSegmentName (name, start, end) {
   let ext = path.extname(name)
-  name = path.removeExt(name, ext)
-  return `${name}_${secondsToTimeString(start)}-${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '')
+  return `${path.basename(name,ext)}_${secondsToTimeString(start)}_${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '-')
 }
 
 /**
@@ -145,10 +144,9 @@ function getSegmentName (name, start, end) {
  */
 function secondsToTimeString (seconds) {
   let time = new Date(seconds * 1000).toISOString()//.substr(11, 5)
-  console.log(time)
-  if(time.substr(12,1)=="0")
-    return time.substr(14,5)
-  else return time.substr(11,8)
+  //if(time.substr(12,1)=="0")
+    //return time.substr(14,5)
+  return time.substr(11,8)
 }
 
 /**
@@ -196,10 +194,10 @@ function writeMusicMetadata (file, compilationName, track, cover) {
   return new Promise((resolve, reject) => {
     let isodate = new Date()
     let data = {
-      artist: compilationName,
+      artist: path.basename(compilationName,path.extname(compilationName)),
       genre: 'Speech',
       disc: 1,
-      album: compilationName,
+      album: path.basename(compilationName,path.extname(compilationName)),
       date: isodate,
       track: track
     }
