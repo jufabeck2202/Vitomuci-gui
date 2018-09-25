@@ -70,13 +70,17 @@
     <button :disabled="outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
       {{download ? "Start downloading & converting":"Start converting" }}</button>
     <v-dialog />
-    <modal name="progressModal" height="auto">
-      <h4>{{download ? "Downloading...":"Converting..."}}</h4>
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }"
-          aria-valuemin="0" aria-valuemax="100"></div>
+
+    <!-- progression modal -->
+    <modal name="progress" height="auto" :clickToClose="false" :adaptive="true">
+      <div class="box">
+        <h4>{{download ? "Downloading...":"Converting..."}}</h4>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" :style="{ 'width': ((100/episodes.length)*progress.progress)+'%' }"
+            aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+       {{progress.info}}
       </div>
-        <p>{{progress.info}}</p>
     </modal>
   </div>
 </template>
@@ -97,10 +101,10 @@
         download: false,
         episodes: [],
         averageDuration: 0,
-        outputPath:"",
+        outputPath: "",
         progress: {
           progress: 0,
-          info: "start"
+          info: ""
         },
         options: {
           startAt: '00:00',
@@ -112,7 +116,7 @@
           rename: false,
           full: false,
           name: '',
-          outputFolder:"audio"
+          outputFolder: "audio"
         }
       }
     },
@@ -138,11 +142,13 @@
     components: {},
     methods: {
       start() {
-        this.$modal.show('progressModal')
+        this.$modal.show('progress')
         if (this.download) {
           Download.download(this.outputPath).then(
             downloadedFiles => {
               this.download = false
+              this.progress.progress = 0
+              
               this.startSplitting(downloadedFiles)
             }
           )
@@ -237,4 +243,8 @@
     height: 100%;
     opacity: 0;
   }
+  .box{
+    text-align: center
+  }
+  
 </style>
