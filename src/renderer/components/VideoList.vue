@@ -99,7 +99,7 @@
         averageDuration: 0,
         outputPath:"",
         progress: {
-          progress: 3,
+          progress: 0,
           info: "start"
         },
         options: {

@@ -4,18 +4,17 @@ const ffprobe = require('./../node-ffprobe')
 const ffmpeg = require('fluent-ffmpeg')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 const ffprobePath = require('@ffprobe-installer/ffprobe').path
-const chalk = require('chalk')
 
 let ffmetadata
 let options
 let output
 let clips = []
 let coverPath = ''
-let progress
+let modal
 
 async function split (files, optionsObj, outputPath, progressObj) {
   options = optionsObj
-  progress = progressObj   
+  modal = progressObj   
   // convert spring to seconds
   options.startAt = stringToSeconds(options.startAt)
   options.endAt = stringToSeconds(options.endAt)
@@ -30,8 +29,8 @@ async function split (files, optionsObj, outputPath, progressObj) {
   for (let file of files) {
     let seconds = await getFileLength(file.path)
     await splitTrack(output, file, Number(seconds))
+    modal.progress++
   }
-  console.log('Finished Splitting')
 
   // set metadata name to first file in array if not set
   if (options.name === '') {
@@ -63,7 +62,6 @@ function checkffmpeg () {
   process.env.FFMPEG_PATH = ffmpegPath
   ffprobe.FFPROBE_PATH = ffprobePath
   ffmetadata = require('ffmetadata')
-  console.log(chalk.grey('ffmpeg installed at:' + ffmpegPath))
   return ffmpegPath
 }
 
@@ -255,7 +253,7 @@ function deleteFile (file) {
 function rename (files) {
   let renamedFiles = []
   for (const file of files) {
-    let removeRound = file.name.replace(/ *\([^)]*\) */g, '')
+    let removeRound = path.basename(file.name.replace(/ *\([^)]*\) */g, ''),path.extname(file.name))
     let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
     let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
     let removeRaw = removeSwift.replace(' RAW', '')
