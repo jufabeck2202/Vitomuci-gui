@@ -23,6 +23,15 @@
         </div>
       </div>
     </main>
+    <modal name="progress" height="auto" :clickToClose="false" :adaptive="true">
+      <div class="box">
+        <h4>Scanning files...</h4>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0"
+            :style="{ 'width': ((100/modal.goal)*modal.progress)+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -35,16 +44,20 @@
 
   export default {
     name: 'landing-page',
-    data () {
+    data() {
       return {
-        url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8'
+        url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
+        modal: {
+          progress: 0,
+          goal: 0
+        },
       }
     },
     components: {
       FileDropdown
     },
     methods: {
-      searchUrl () {
+      searchUrl() {
         let toast = this.$toasted.success('Scanning Url...', {
           theme: 'outline',
           position: 'bottom-center',
@@ -64,12 +77,14 @@
           this.$router.push('download')
         })
       },
-      handleFileChange (e) {
+      handleFileChange(e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles (newFiles) {
-        Videos.getFiles(newFiles).then(files => {
+      verifyFiles(newFiles) {
+        this.modal.goal = newFiles.length
+        this.$modal.show('progress')
+        Videos.getFiles(newFiles, this.modal).then(files => {
           let verifiedFiles = Videos.verifyFiles(files)
           if (!verifiedFiles.length) {
             new Notification('Wrong format', {

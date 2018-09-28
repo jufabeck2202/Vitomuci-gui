@@ -17,7 +17,7 @@ let videos = []
  * @param {String} input directory or file
  * @returns {Promise} array with files
  */
-async function getFiles (files) {
+async function getFiles (files, modal) {
   split.checkffmpeg()
   try {
     let foundFiles = []
@@ -41,9 +41,10 @@ async function getFiles (files) {
           duration: duration
         })
       }
+      modal.progress++
     }
     return foundFiles.sort((a, b) => a.name.localeCompare(b.name))
-  } catch (error) {}
+  } catch (error) {console.log(error)}
 }
 
 /**
