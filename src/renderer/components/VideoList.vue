@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="row">
-      <div class="col float-left">
+      <div class="col">
         <ul class="list-group listOverflow">
-          <li class="list-group-item" v-for="(episode) in episodes" :key="episode.xxx">{{options.rename?renamePreview(episode.name):episode.name}}</li>
+          <li class="list-group-item" v-for="(episode) in episodes" :key="episode.xxx">{{options.rename?renamePreview(episode.name):episode.name}}<span class="float-right">{{secondsToTimeString(episode.duration)}}</span></li>
         </ul>
       </div>
 
@@ -102,6 +102,7 @@
     name: 'download',
     data() {
       return {
+        secondsToTimeString:Split.secondsToTimeString,
         download: false,
         episodes: [],
         averageDuration: 0,
