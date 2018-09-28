@@ -2,11 +2,12 @@
   <div>
     <div class="container">
       <div class="row">
-        <div class="col overflow">
-          <div v-for="(episode) in episodes" :key="episode.xxx">
-            <p>{{options.rename?renamePreview(episode.name):episode.name}}</p>
-          </div>
+        <div class="col">
+           <ul class="list-group listOverflow">
+          <li class="list-group-item" v-for="(episode) in episodes" :key="episode.xxx">{{options.rename?renamePreview(episode.name):episode.name}}</li>
+        </ul>
         </div>
+       
         <div class="col">
           <!-- Default form login -->
           <form class="text-center">
@@ -26,7 +27,7 @@
               <input type="checkbox" class="custom-control-input" v-model="options.metadata" id="combine">
               <label class="custom-control-label" for="combine">Combine clips into one album</label>
             </div>
-             <!-- Album -->
+            <!-- Album -->
             <div class="form-group col" v-if="options.metadata">
               <label for="Album">Album Name</label>
               <input type="text" class="form-control" id="album" v-model="options.album" placeholder="album name">
@@ -120,7 +121,7 @@
           cover: false,
           rename: false,
           full: false,
-          album:"",
+          album: "",
           outputFolder: "audio"
         }
       }
@@ -135,7 +136,7 @@
         this.outputPath = path.dirname(this.episodes[0].path)
       }
       //set album name
-      this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g,"")
+      this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g, "")
       this.getAverageDuration()
     },
     beforeRouteEnter(to, from, next) {
@@ -153,7 +154,7 @@
           Download.download(this.outputPath, this.progress).then(
             downloadedFiles => {
               this.download = false
-              this.progress.progress = 0              
+              this.progress.progress = 0
               this.progress.info = "start converting"
 
 
@@ -234,9 +235,10 @@
 </script>
 
 <style>
-  .overflow {
-    overflow: scroll;
-    height: 300px;
+  .listOverflow {
+    overflow-y: auto;
+    width:400px;
+    height:400px;
   }
 
   .file-btn {
@@ -255,4 +257,7 @@
   .box {
     text-align: center
   }
+  .list-group-item {
+    padding: 3px 10px
+}
 </style>
