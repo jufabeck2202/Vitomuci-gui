@@ -27,7 +27,7 @@ async function getFiles (files) {
         for (const item of folderFiles) {
           let duration = await split.getFileLength(file.path)
           foundFiles.push({
-            name: item,
+            name: path.basename(item,path.extname(item)),
             path: path.join(file.path, item),
             duration: duration
           })
@@ -35,8 +35,11 @@ async function getFiles (files) {
         return foundFiles
       } else if (fileExists.sync(file.path)) {
         let duration = await split.getFileLength(file.path)
-        file.duration = duration
-        foundFiles.push(file)
+        foundFiles.push({
+          name: path.basename(file.name,path.extname(file.name)),
+          path: file.path,
+          duration: duration
+        })
       }
     }
     return foundFiles.sort((a, b) => a.name.localeCompare(b.name))

@@ -95,12 +95,11 @@ async function splitTrack (outputDirectory, file, duration) {
   modal.info = `converting ${file.name}` 
   // if you dont want seprate clips
   if (options.full) {
-    let ext = path.extname(file.name)
-    let newName = path.removeExt(file.name, ext)
-    await segmentMp3(file.path, path.join(outputDirectory, newName + '.mp3'), 0, duration)
+    
+    await segmentMp3(file.path, path.join(outputDirectory, file.name + '.mp3'), 0, duration)
     clips.push({
-      name: newName,
-      path: path.join(outputDirectory, newName + '.mp3')
+      name: file.name,
+      path: path.join(outputDirectory, file.name + '.mp3')
     })
     return
   }
@@ -257,7 +256,7 @@ function deleteFile (file) {
 function rename (files) {
   let renamedFiles = []
   for (const file of files) {
-    let removeRound = path.basename(file.name.replace(/ *\([^)]*\) */g, ''),path.extname(file.name))
+    let removeRound = file.name.replace(/ *\([^)]*\) */g, '')
     let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
     let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
     let removeRaw = removeSwift.replace(' RAW', '')

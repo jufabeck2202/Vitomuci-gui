@@ -29,7 +29,7 @@
              <!-- Album -->
             <div class="form-group col" v-if="options.metadata">
               <label for="Album">Album Name</label>
-              <input type="text" class="form-control" id="album" v-model="options.album" placeholder="choose a name for your album">
+              <input type="text" class="form-control" id="album" v-model="options.album" placeholder="album name">
             </div>
             <!-- Radio select full-->
             <div class="custom-control custom-radio">
