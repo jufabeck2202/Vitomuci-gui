@@ -1,69 +1,67 @@
 <template>
   <div>
-    <div class="container">
-      <div class="row">
-        <div class="col">
-           <ul class="list-group listOverflow">
+    <div class="row">
+      <div class="col float-left">
+        <ul class="list-group listOverflow">
           <li class="list-group-item" v-for="(episode) in episodes" :key="episode.xxx">{{options.rename?renamePreview(episode.name):episode.name}}</li>
         </ul>
-        </div>
-       
-        <div class="col">
-          <!-- Default form login -->
-          <form class="text-center">
-            <p>Average Duration: {{averageDuration}}</p>
-            <!-- Create cover checkbox-->
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" v-model="options.cover" id="cover">
-              <label class="custom-control-label" for="cover">Create Cover</label>
+      </div>
+
+      <div class="col">
+        <!-- Default form login -->
+        <form class="text-center">
+          <p>Average Duration: {{averageDuration}}</p>
+          <!-- Create cover checkbox-->
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" v-model="options.cover" id="cover">
+            <label class="custom-control-label" for="cover">Create Cover</label>
+          </div>
+          <!-- rename ceckbox-->
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" v-model="options.rename" id="rename">
+            <label class="custom-control-label" for="rename">remove {}()[] from filenames</label>
+          </div>
+          <!-- Combine check box-->
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" v-model="options.metadata" id="combine">
+            <label class="custom-control-label" for="combine">Combine clips into one album</label>
+          </div>
+          <!-- Album -->
+          <div class="form-group col" v-if="options.metadata">
+            <label for="Album">Album Name</label>
+            <input type="text" class="form-control" id="album" v-model="options.album" placeholder="album name">
+          </div>
+          <!-- Radio select full-->
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" value="full" v-model="options.split" id="full" name="split">
+            <label class="custom-control-label" for="full">Full</label>
+          </div>
+          <!-- Radio select split-->
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" value="split" v-model="options.split" id="split" name="split"
+              checked>
+            <label class="custom-control-label" for="split">Split</label>
+          </div>
+          <!-- Duration -->
+          <div class="form-group col" v-if="options.split=='split'">
+            <label for="duration">Duration</label>
+            <input type="text" class="form-control" id="duration" v-model="options.duration" placeholder="mm:ss">
+          </div>
+          <div class="form-row">
+            <!-- Start -->
+            <div class="form-group col">
+              <label for="start">Start at:</label>
+              <input type="text" class="form-control" id="startAt" v-model="options.startAt" placeholder="mm:ss">
             </div>
-            <!-- rename ceckbox-->
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" v-model="options.rename" id="rename">
-              <label class="custom-control-label" for="rename">remove {}()[] from filenames</label>
+            <!-- End -->
+            <div class="form-group col">
+              <label for="end">End at:</label>
+              <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
             </div>
-            <!-- Combine check box-->
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" v-model="options.metadata" id="combine">
-              <label class="custom-control-label" for="combine">Combine clips into one album</label>
-            </div>
-            <!-- Album -->
-            <div class="form-group col" v-if="options.metadata">
-              <label for="Album">Album Name</label>
-              <input type="text" class="form-control" id="album" v-model="options.album" placeholder="album name">
-            </div>
-            <!-- Radio select full-->
-            <div class="custom-control custom-radio">
-              <input type="radio" class="custom-control-input" value="full" v-model="options.split" id="full" name="split">
-              <label class="custom-control-label" for="full">Full</label>
-            </div>
-            <!-- Radio select split-->
-            <div class="custom-control custom-radio">
-              <input type="radio" class="custom-control-input" value="split" v-model="options.split" id="split" name="split"
-                checked>
-              <label class="custom-control-label" for="split">Split</label>
-            </div>
-            <!-- Duration -->
-            <div class="form-group col" v-if="options.split=='split'">
-              <label for="duration">Duration</label>
-              <input type="text" class="form-control" id="duration" v-model="options.duration" placeholder="mm:ss">
-            </div>
-            <div class="form-row">
-              <!-- Start -->
-              <div class="form-group col">
-                <label for="start">Start at:</label>
-                <input type="text" class="form-control" id="startAt" v-model="options.startAt" placeholder="mm:ss">
-              </div>
-              <!-- End -->
-              <div class="form-group col">
-                <label for="end">End at:</label>
-                <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
-              </div>
-            </div>
-            <button type="button" class="btn btn-sm btn-primary btn-block" @click="saveDefault"> Save as default
-            </button>
-          </form>
-        </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-primary btn-block" @click="saveDefault"> Save as default
+          </button>
+        </form>
       </div>
     </div>
     <div class="btn btn-primary file-btn">
@@ -237,8 +235,7 @@
 <style>
   .listOverflow {
     overflow-y: auto;
-    width:400px;
-    height:400px;
+    height: 450px;
   }
 
   .file-btn {
@@ -257,7 +254,8 @@
   .box {
     text-align: center
   }
+
   .list-group-item {
     padding: 3px 10px
-}
+  }
 </style>
