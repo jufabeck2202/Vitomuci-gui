@@ -26,6 +26,11 @@
               <input type="checkbox" class="custom-control-input" v-model="options.metadata" id="combine">
               <label class="custom-control-label" for="combine">Combine clips into one album</label>
             </div>
+             <!-- Album -->
+            <div class="form-group col" v-if="options.metadata">
+              <label for="Album">Album Name</label>
+              <input type="text" class="form-control" id="album" v-model="options.album" placeholder="choose a name for your album">
+            </div>
             <!-- Radio select full-->
             <div class="custom-control custom-radio">
               <input type="radio" class="custom-control-input" value="full" v-model="options.split" id="full" name="split">
@@ -115,7 +120,7 @@
           cover: false,
           rename: false,
           full: false,
-          name: '',
+          album:"",
           outputFolder: "audio"
         }
       }
@@ -129,7 +134,8 @@
         this.episodes = Video.get()
         this.outputPath = path.dirname(this.episodes[0].path)
       }
-
+      //set album name
+      this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g,"")
       this.getAverageDuration()
     },
     beforeRouteEnter(to, from, next) {

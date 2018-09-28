@@ -32,10 +32,7 @@ async function split (files, optionsObj, outputPath, progressObj) {
     modal.progress++
   }
 
-  // set metadata name to first file in array if not set
-  if (options.name === '') {
-    options.name = files[0].name
-  }
+ 
   // take cover picture
   if (options.cover) {
     coverPath = await getCoverPicture(files[0].path, output, options.startAt)
@@ -45,7 +42,7 @@ async function split (files, optionsObj, outputPath, progressObj) {
   if (options.metadata) {
     modal.info = `updating metadata of ${clips.length} files` 
     for (let i in clips) {
-      await writeMusicMetadata(clips[i].path, options.name, ++i + '/' + clips.length, coverPath)
+      await writeMusicMetadata(clips[i].path, options.album, ++i + '/' + clips.length, coverPath)
     }
   }
 
@@ -195,14 +192,14 @@ function getFileLength (file) {
  * @param {String} compilationName
  * @param {String} cover
  */
-function writeMusicMetadata (file, compilationName, track, cover) {
+function writeMusicMetadata (file, album, track, cover) {
   return new Promise((resolve, reject) => {
     let isodate = new Date()
     let data = {
-      artist: path.basename(compilationName,path.extname(compilationName)),
+      artist: album,
       genre: 'Speech',
       disc: 1,
-      album: path.basename(compilationName,path.extname(compilationName)),
+      album: album,
       date: isodate,
       track: track
     }
