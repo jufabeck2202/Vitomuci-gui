@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import modules from './modules'
-//extra packages
+// extra packages
 import Toasted from 'vue-toasted'
 import VModal from 'vue-js-modal'
-
 
 Vue.use(Toasted)
 Vue.use(Vuex)

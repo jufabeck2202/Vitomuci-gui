@@ -66,7 +66,7 @@ async function getVideoDuration (url) {
  * Returns list of podcast or youtube videos
  * @param {*} url url to podcast or rss feed
  */
-async function getContent (url) {
+async function getContent (url, modal) {
   // Check if url
   if (isUrl(url)) {
     let episodes = []
@@ -74,8 +74,10 @@ async function getContent (url) {
       // check if single video or playlist
       try {
         episodes = await getPlaylist(url)
+        modal.goal = episodes.length
         for (const i in episodes) {
           try {
+            modal.progress++
             episodes[i].duration = await getVideoDuration(episodes[i].url)
           } catch (error) {
             episodes.splice(i, 1)
@@ -84,19 +86,22 @@ async function getContent (url) {
       } catch (error) {
         throw error
       }
-      console.log(episodes)
       return episodes
     } else {
       // check for podcast
       let rss
       try {
         rss = await getRSS(url)
+        modal.goal = rss.episodes.length
         rss.episodes.forEach(episode => {
           episodes.push({
             name: episode.title,
             url: episode.enclosure.url,
             duration: episode.duration
           })
+          console.log(episode.duration)
+
+          modal.progress++
         })
         return episodes
       } catch (error) {

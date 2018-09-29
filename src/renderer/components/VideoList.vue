@@ -95,21 +95,21 @@
   import Split from '@/services/split'
 
   const Store = require('electron-store')
-  const path = require("upath")
+  const path = require('upath')
   const store = new Store()
 
   export default {
     name: 'download',
-    data() {
+    data () {
       return {
-        secondsToTimeString:Split.secondsToTimeString,
+        secondsToTimeString: Split.secondsToTimeString,
         download: false,
         episodes: [],
         averageDuration: 0,
-        outputPath: "",
+        outputPath: '',
         progress: {
           progress: 0,
-          info: ""
+          info: ''
         },
         options: {
           startAt: '00:00',
@@ -120,12 +120,12 @@
           cover: false,
           rename: false,
           full: false,
-          album: "",
-          outputFolder: "audio"
+          album: '',
+          outputFolder: 'audio'
         }
       }
     },
-    mounted() {
+    mounted () {
       this.getDefault()
       if (Download.get().length) {
         this.download = true
@@ -134,11 +134,11 @@
         this.episodes = Video.get()
         this.outputPath = path.dirname(this.episodes[0].path)
       }
-      //set album name
-      this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g, "")
+      // set album name
+      this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g, '')
       this.getAverageDuration()
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Video.get().length && !Download.get().length) {
           vm.$router.push('landing-page')
@@ -147,15 +147,14 @@
     },
     components: {},
     methods: {
-      start() {
+      start () {
         this.$modal.show('progress')
         if (this.download) {
           Download.download(this.outputPath, this.progress).then(
             downloadedFiles => {
               this.download = false
               this.progress.progress = 0
-              this.progress.info = "start converting"
-
+              this.progress.info = 'start converting'
 
               this.startSplitting(downloadedFiles)
             }
@@ -164,37 +163,36 @@
           this.startSplitting(this.episodes)
         }
       },
-      folderExists() {
+      folderExists () {
         this.$modal.show('dialog', {
           title: 'output folder audio already exist',
           text: '',
           buttons: [{
-              title: 'replace folder',
-              handler: () => {
-                alert('Woot!')
-              }
-            },
-            {
-              title: 'use existing folder', // Button title
-              default: true, // Will be triggered by default if 'Enter' pressed.
-              handler: () => {} // Button click handler
-            },
-            {
-              title: 'Close'
+            title: 'replace folder',
+            handler: () => {
+              alert('Woot!')
             }
+          },
+          {
+            title: 'use existing folder', // Button title
+            default: true, // Will be triggered by default if 'Enter' pressed.
+            handler: () => {} // Button click handler
+          },
+          {
+            title: 'Close'
+          }
           ]
         })
       },
 
-      startSplitting(files) {
-        Split.checkffmpeg()
+      startSplitting (files) {
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options, this.outputPath, this.progress).then(clips => {
           console.log(clips)
         })
       },
       // preview rename
-      renamePreview(name) {
+      renamePreview (name) {
         let removeRound = name.replace(/ *\([^)]*\) */g, '')
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
@@ -202,7 +200,7 @@
         name = removeRaw
         return name.trim()
       },
-      saveDefault() {
+      saveDefault () {
         store.set('options', this.options)
 
         let toast = this.$toasted.success('Saved', {
@@ -211,13 +209,13 @@
           duration: 1000
         })
       },
-      getDefault() {
+      getDefault () {
         let options = store.get('options')
         if (options) {
           this.options = options
         }
       },
-      getAverageDuration() {
+      getAverageDuration () {
         let total = 0
         for (const ep of this.episodes) {
           if (ep.duration) {
@@ -226,9 +224,9 @@
         }
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
-      outputFolder(e) {
+      outputFolder (e) {
         this.outputPath = e.target.files[0].path
-      },
+      }
     }
   }
 </script>

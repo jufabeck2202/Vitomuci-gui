@@ -40,30 +40,60 @@
   import Videos from '@/services/videos'
   import Url from '@/services/url'
   import Download from '@/services/download'
+  import Split from '@/services/split'
+
   const path = require('upath')
+  const ffbinaries = require('ffbinaries')
 
   export default {
     name: 'landing-page',
-    data() {
+    data () {
       return {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
         modal: {
           progress: 0,
           goal: 0
-        },
+        }
       }
     },
     components: {
       FileDropdown
     },
-    methods: {
-      searchUrl() {
-        let toast = this.$toasted.success('Scanning Url...', {
-          theme: 'outline',
-          position: 'bottom-center',
-          duration: 1000
+    mounted () {
+      var dest = path.join(__dirname, 'ffmpeg')
+      var platform = ffbinaries.detectPlatform()
+
+      ffbinaries.downloadFiles(
+        ['ffmpeg', 'ffprobe'], {
+          platform: platform,
+          quiet: true,
+          destination: dest
+        },
+        function (err, data) {
+          console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.')
+          console.log('err', err)
+          console.log('data', data)
+
+          var ffmpegPath = path.join(
+            dest,
+            ffbinaries.getBinaryFilename('ffmpeg', platform)
+          )
+
+          var ffprobePath = path.join(
+            dest,
+            ffbinaries.getBinaryFilename('ffprobe', platform)
+          )
+          Split.checkffmpeg(ffmpegPath, ffprobePath)
+
+          // ffmpeg.setFfmpegPath(ffmpegPath);
+          // ffmpeg.setFfprobePath(ffprobePath);
         })
-        Url.getContent(this.url).then(episodes => {
+    },
+    methods: {
+      searchUrl () {
+        // initialize progress modal
+        this.$modal.show('progress')
+        Url.getContent(this.url, this.modal).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
             new Notification('Wrong url format', {
               body: 'Please, insert youtube or podcast url',
@@ -77,11 +107,12 @@
           this.$router.push('download')
         })
       },
-      handleFileChange(e) {
+      handleFileChange (e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles(newFiles) {
+      verifyFiles (newFiles) {
+        // initialize progress modal
         this.modal.goal = newFiles.length
         this.$modal.show('progress')
         Videos.getFiles(newFiles, this.modal).then(files => {

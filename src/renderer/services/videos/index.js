@@ -18,7 +18,6 @@ let videos = []
  * @returns {Promise} array with files
  */
 async function getFiles (files, modal) {
-  split.checkffmpeg()
   try {
     let foundFiles = []
     for (const file of files) {
@@ -27,7 +26,7 @@ async function getFiles (files, modal) {
         for (const item of folderFiles) {
           let duration = await split.getFileLength(file.path)
           foundFiles.push({
-            name: path.basename(item,path.extname(item)),
+            name: path.basename(item, path.extname(item)),
             path: path.join(file.path, item),
             duration: duration
           })
@@ -36,7 +35,7 @@ async function getFiles (files, modal) {
       } else if (fileExists.sync(file.path)) {
         let duration = await split.getFileLength(file.path)
         foundFiles.push({
-          name: path.basename(file.name,path.extname(file.name)),
+          name: path.basename(file.name, path.extname(file.name)),
           path: file.path,
           duration: duration
         })
@@ -44,7 +43,7 @@ async function getFiles (files, modal) {
       modal.progress++
     }
     return foundFiles.sort((a, b) => a.name.localeCompare(b.name))
-  } catch (error) {console.log(error)}
+  } catch (error) { console.log(error) }
 }
 
 /**

@@ -2,8 +2,6 @@ const path = require('upath')
 const fs = require('fs')
 const ffprobe = require('./../node-ffprobe')
 const ffmpeg = require('fluent-ffmpeg')
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
-const ffprobePath = require('@ffprobe-installer/ffprobe').path
 
 let ffmetadata
 let options
@@ -14,14 +12,15 @@ let modal
 
 async function split (files, optionsObj, outputPath, progressObj) {
   options = optionsObj
-  modal = progressObj   
+  modal = progressObj
   // convert spring to seconds
   options.startAt = stringToSeconds(options.startAt)
   options.endAt = stringToSeconds(options.endAt)
   options.duration = stringToSeconds(options.duration)
   // rename
-  if (options.rename) { files = rename(files) }
-  console.log(files)
+  if (options.rename) {
+    files = rename(files)
+  }
 
   // Split track
   output = path.join(outputPath, options.outputFolder)
@@ -32,7 +31,6 @@ async function split (files, optionsObj, outputPath, progressObj) {
     modal.progress++
   }
 
- 
   // take cover picture
   if (options.cover) {
     coverPath = await getCoverPicture(files[0].path, output, options.startAt)
@@ -40,7 +38,7 @@ async function split (files, optionsObj, outputPath, progressObj) {
 
   // updating meta data, combines Clips into album
   if (options.metadata) {
-    modal.info = `updating metadata of ${clips.length} files` 
+    modal.info = `updating metadata of ${clips.length} files`
     for (let i in clips) {
       await writeMusicMetadata(clips[i].path, options.album, ++i + '/' + clips.length, coverPath)
     }
@@ -54,13 +52,12 @@ async function split (files, optionsObj, outputPath, progressObj) {
  * Sets the required ffmpeg path to all
  * packages that require it
  */
-function checkffmpeg () {
+function checkffmpeg (ffmpegPath, ffprobePath) {
   ffmpeg.setFfmpegPath(ffmpegPath)
   ffmpeg.setFfprobePath(ffprobePath)
   process.env.FFMPEG_PATH = ffmpegPath
   ffprobe.FFPROBE_PATH = ffprobePath
   ffmetadata = require('ffmetadata')
-  return ffmpegPath
 }
 
 /**
@@ -92,10 +89,9 @@ function segmentMp3 (input, output, start, duration) {
  * @param {Number} duration
  */
 async function splitTrack (outputDirectory, file, duration) {
-  modal.info = `converting ${file.name}` 
+  modal.info = `converting ${file.name}`
   // if you dont want seprate clips
   if (options.full) {
-    
     await segmentMp3(file.path, path.join(outputDirectory, file.name + '.mp3'), 0, duration)
     clips.push({
       name: file.name,
@@ -107,7 +103,7 @@ async function splitTrack (outputDirectory, file, duration) {
   let durationIndex = options.startAt
   let parts = 0
   while ((durationIndex + options.duration) <= (duration - options.endAt)) {
-    modal.info = `converting ${file.name} splitting into ${parts} parts` 
+    modal.info = `converting ${file.name} splitting into ${parts} parts`
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
@@ -118,7 +114,7 @@ async function splitTrack (outputDirectory, file, duration) {
   }
   // still add 1 min clips
   if (((duration - options.endAt) - durationIndex) >= 60) {
-    modal.info = `converting ${file.name} splitting into ${parts} parts` 
+    modal.info = `converting ${file.name} splitting into ${parts} parts`
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, duration - options.endAt)), durationIndex, (duration - options.endAt) - durationIndex)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
@@ -136,7 +132,7 @@ async function splitTrack (outputDirectory, file, duration) {
  */
 function getSegmentName (name, start, end) {
   let ext = path.extname(name)
-  return `${path.basename(name,ext)}_${secondsToTimeString(start)} to ${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '-')
+  return `${path.basename(name, ext)}_${secondsToTimeString(start)} to ${secondsToTimeString(end)}.mp3`.replace(/[/\\?%*:|"<>&]/g, '-')
 }
 
 /**
@@ -144,10 +140,12 @@ function getSegmentName (name, start, end) {
  * @param {Number} seconds
  */
 function secondsToTimeString (seconds) {
-  let time = new Date(seconds * 1000).toISOString()//.substr(11, 5)
-  //if(time.substr(12,1)=="0")
-    //return time.substr(14,5)
-  return time.substr(11,8)
+  if (seconds !== undefined) {
+    let time = new Date(seconds * 1000).toISOString() // .substr(11, 5)
+    // if(time.substr(12,1)=="0")
+    // return time.substr(14,5)
+    return time.substr(11, 8)
+  }
 }
 
 /**
@@ -263,7 +261,10 @@ function rename (files) {
 
     let newPath = path.join(path.dirname(file.path), removeRaw + path.extname(file.path))
     fs.renameSync(file.path, newPath)
-    renamedFiles.push({name: removeRaw, path: newPath})
+    renamedFiles.push({
+      name: removeRaw,
+      path: newPath
+    })
   }
   return renamedFiles
 }

@@ -86,66 +86,6 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@ffmpeg-installer/darwin-x64@4.0.6":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@ffmpeg-installer/darwin-x64/-/darwin-x64-4.0.6.tgz#366c0ee40160e0e6b6e4748f97a2bd9dd45d9e68"
-
-"@ffmpeg-installer/ffmpeg@^1.0.15":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@ffmpeg-installer/ffmpeg/-/ffmpeg-1.0.15.tgz#e7eb92710971e73eb29986eda32359edfdc4f0df"
-  optionalDependencies:
-    "@ffmpeg-installer/darwin-x64" "4.0.6"
-    "@ffmpeg-installer/linux-ia32" "4.0.4"
-    "@ffmpeg-installer/linux-x64" "4.0.4"
-    "@ffmpeg-installer/win32-ia32" "4.0.4"
-    "@ffmpeg-installer/win32-x64" "4.0.3"
-
-"@ffmpeg-installer/linux-ia32@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ffmpeg-installer/linux-ia32/-/linux-ia32-4.0.4.tgz#b8d2c789f2b481f032b9c74efd648699768f1693"
-
-"@ffmpeg-installer/linux-x64@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ffmpeg-installer/linux-x64/-/linux-x64-4.0.4.tgz#0d550a1de1dd506c8a71c896013a58527f3d2604"
-
-"@ffmpeg-installer/win32-ia32@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ffmpeg-installer/win32-ia32/-/win32-ia32-4.0.4.tgz#f620bbec3c1c0452e9263709317e18cd2f1ce954"
-
-"@ffmpeg-installer/win32-x64@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@ffmpeg-installer/win32-x64/-/win32-x64-4.0.3.tgz#ff9cf465f5a1a46c2a0334f745aa8bec3b3f48a9"
-
-"@ffprobe-installer/darwin-x64@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@ffprobe-installer/darwin-x64/-/darwin-x64-4.0.3.tgz#2b933fec952ad48af71b7622222e806d9956ba92"
-
-"@ffprobe-installer/ffprobe@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@ffprobe-installer/ffprobe/-/ffprobe-1.0.9.tgz#262c2b397940ebac48c7352ad4f567855f98add0"
-  optionalDependencies:
-    "@ffprobe-installer/darwin-x64" "4.0.3"
-    "@ffprobe-installer/linux-ia32" "4.0.3"
-    "@ffprobe-installer/linux-x64" "4.0.3"
-    "@ffprobe-installer/win32-ia32" "4.0.2"
-    "@ffprobe-installer/win32-x64" "4.0.2"
-
-"@ffprobe-installer/linux-ia32@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@ffprobe-installer/linux-ia32/-/linux-ia32-4.0.3.tgz#838ea0284b0a202edb3162988f43a2d9bd7d828f"
-
-"@ffprobe-installer/linux-x64@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@ffprobe-installer/linux-x64/-/linux-x64-4.0.3.tgz#3f4823afcfc4dc8572a86b07f6a5438dbb6cb32f"
-
-"@ffprobe-installer/win32-ia32@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@ffprobe-installer/win32-ia32/-/win32-ia32-4.0.2.tgz#297476ef8f15ff91ddb3f582329124b420014b90"
-
-"@ffprobe-installer/win32-x64@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@ffprobe-installer/win32-x64/-/win32-x64-4.0.2.tgz#3e18e27008250693bceb300a75d277e8e1ad51fa"
-
 "@types/node@*":
   version "10.9.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.9.4.tgz#0f4cb2dc7c1de6096055357f70179043c33e9897"
@@ -621,7 +561,7 @@ async@0.1.x:
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/async/-/async-0.1.22.tgz#0fc1aaa088a0e3ef0ebe2d8831bab0dcf8845061"
 
-async@>=0.2.9:
+async@>=0.2.9, async@^2.5.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.1.tgz#b245a23ca71930044ec53fa46aa00a3e87c6a610"
   dependencies:
@@ -2089,6 +2029,10 @@ clap@^1.0.9:
   resolved "https://registry.yarnpkg.com/clap/-/clap-1.2.3.tgz#4f36745b32008492557f46412d66d50cb99bce51"
   dependencies:
     chalk "^1.1.3"
+
+clarg@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/clarg/-/clarg-0.0.4.tgz#708ffb5ec352226a6dc5871c374daca8c871ff6d"
 
 class-utils@^0.3.5:
   version "0.3.6"
@@ -3598,7 +3542,7 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-extract-zip@^1.0.3:
+extract-zip@^1.0.3, extract-zip@^1.6.5:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/extract-zip/-/extract-zip-1.6.7.tgz#a840b4b8af6403264c8db57f4f1a74333ef81fe9"
   dependencies:
@@ -3652,6 +3596,17 @@ fd-slicer@~1.0.1:
   resolved "https://registry.yarnpkg.com/fd-slicer/-/fd-slicer-1.0.1.tgz#8b5bcbd9ec327c5041bf9ab023fd6750f1177e65"
   dependencies:
     pend "~1.2.0"
+
+ffbinaries@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/ffbinaries/-/ffbinaries-1.1.0.tgz#bd81232ecc554e811ac7925f0b682872c32de797"
+  dependencies:
+    async "^2.5.0"
+    clarg "0.0.4"
+    extract-zip "^1.6.5"
+    fs-extra "^5.0.0"
+    lodash "^4.17.4"
+    request "^2.83.0"
 
 ffmetadata@^1.5.0:
   version "1.5.0"
@@ -3863,6 +3818,14 @@ fs-extra@^0.30.0:
     klaw "^1.0.0"
     path-is-absolute "^1.0.0"
     rimraf "^2.2.8"
+
+fs-extra@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-5.0.0.tgz#414d0110cdd06705734d055652c5411260c31abd"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^4.0.0"
+    universalify "^0.1.0"
 
 fs-extra@^6.0.1:
   version "6.0.1"
@@ -6652,7 +6615,7 @@ pluralize@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-7.0.0.tgz#298b89df8b93b0221dbf421ad2b1b1ea23fc6777"
 
-popper.js@^1.12.9:
+popper.js@^1.12.9, popper.js@^1.14.4:
   version "1.14.4"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.4.tgz#8eec1d8ff02a5a3a152dd43414a15c7b79fd69b6"
 

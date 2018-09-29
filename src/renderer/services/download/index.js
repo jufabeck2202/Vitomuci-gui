@@ -17,7 +17,7 @@ function get () {
 function clear () {
   episodes = []
 }
-async function download (output,progressObj) {
+async function download (output, progressObj) {
   let downloadedEpisodes = []
   progress = progressObj
   if (episodes[0].url.includes('youtube')) {
