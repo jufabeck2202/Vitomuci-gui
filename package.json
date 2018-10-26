@@ -59,6 +59,7 @@
     "clear": "^0.1.0",
     "commander": "^2.15.1",
     "electron-builder-squirrel-windows": "^20.28.3",
+    "electron-context-menu": "^0.10.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^2.0.0",
     "ffbinaries": "^1.1.0",

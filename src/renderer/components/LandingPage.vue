@@ -41,15 +41,14 @@
   import Url from '@/services/url'
   import Download from '@/services/download'
   import Split from '@/services/split'
-  const { app } = require("electron").remote;
+  const { app } = require('electron').remote
 
-
-  const path = require('upath')
+const path = require('upath')
   const ffbinaries = require('ffbinaries')
 
   export default {
     name: 'landing-page',
-    data() {
+    data () {
       return {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
         modal: {
@@ -61,11 +60,10 @@
     components: {
       FileDropdown
     },
-    mounted() {
-
-      //let dest = path.join(__dirname)
-      let platform = ffbinaries.detectPlatform();
-      let dest = path.join(app.getPath("userData"), "ffmpeg");
+    mounted () {
+      // let dest = path.join(__dirname)
+      let platform = ffbinaries.detectPlatform()
+      let dest = path.join(app.getPath('userData'), 'ffmpeg')
       ffbinaries.downloadFiles(
         ['ffmpeg', 'ffprobe'], {
           platform: platform,
@@ -73,7 +71,7 @@
           destination: dest
         },
         function (err, data) {
-          //console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.')
+          // console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.')
           console.log('err', err)
           console.log('data', data)
 
@@ -93,7 +91,7 @@
         })
     },
     methods: {
-      searchUrl() {
+      searchUrl () {
         // initialize progress modal
         this.$modal.show('progress')
         Url.getContent(this.url, this.modal).then(episodes => {
@@ -110,11 +108,11 @@
           this.$router.push('download')
         })
       },
-      handleFileChange(e) {
+      handleFileChange (e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles(newFiles) {
+      verifyFiles (newFiles) {
         // initialize progress modal
         this.modal.goal = newFiles.length
         this.$modal.show('progress')
