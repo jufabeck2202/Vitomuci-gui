@@ -53,6 +53,9 @@ async function split (files, optionsObj, outputPath, progressObj) {
  * packages that require it
  */
 function checkffmpeg (ffmpegPath, ffprobePath) {
+  console.info('ffmpegPaht:', ffmpegPath)
+  console.info('ffprobePath:', ffprobePath)
+
   ffmpeg.setFfmpegPath(ffmpegPath)
   ffmpeg.setFfprobePath(ffprobePath)
   process.env.FFMPEG_PATH = ffmpegPath

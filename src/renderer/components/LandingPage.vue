@@ -63,9 +63,9 @@ const path = require('upath')
     mounted () {
       // let dest = path.join(__dirname)
       let platform = ffbinaries.detectPlatform()
-      let dest = path.join(app.getPath('userData'), 'ffmpeg')
+      let dest = path.join(app.getPath('userData'), 'ff')
       ffbinaries.downloadFiles(
-        ['ffmpeg', 'ffprobe'], {
+        ['ffprobe', 'ffmpeg'], {
           platform: platform,
           quiet: true,
           destination: dest
@@ -79,7 +79,6 @@ const path = require('upath')
             dest,
             ffbinaries.getBinaryFilename('ffmpeg', platform)
           )
-
           let ffprobePath = path.join(
             dest,
             ffbinaries.getBinaryFilename('ffprobe', platform)
