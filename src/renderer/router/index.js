@@ -21,6 +21,11 @@ export default new Router({
       component: require('@/components/Download').default
     },
     {
+      path: '/videos/finish',
+      name: 'finish',
+      component: require('@/components/Finish').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
