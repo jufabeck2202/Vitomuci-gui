@@ -249,6 +249,10 @@ function deleteFile (file) {
   })
 }
 
+function getConvertedClips () {
+  return clips
+}
+
 /**
  * Cleans up the filename of the given files
  * Removes Brackets and the text inside them
@@ -276,5 +280,6 @@ export default {
   split,
   checkffmpeg,
   getFileLength,
-  secondsToTimeString
+  secondsToTimeString,
+  getConvertedClips
 }

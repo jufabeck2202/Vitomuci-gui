@@ -21,7 +21,7 @@ export default new Router({
       component: require('@/components/Download').default
     },
     {
-      path: '/videos/finish',
+      path: '/finish',
       name: 'finish',
       component: require('@/components/Finish').default
     },

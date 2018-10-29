@@ -97,7 +97,6 @@
   const Store = require('electron-store')
   const path = require('upath')
   const store = new Store()
-
   export default {
     name: 'download',
     data () {
@@ -188,7 +187,7 @@
       startSplitting (files) {
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options, this.outputPath, this.progress).then(clips => {
-          console.log(clips)
+          this.$router.push('finish');
         })
       },
       // preview rename
