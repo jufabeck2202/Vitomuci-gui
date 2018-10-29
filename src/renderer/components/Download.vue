@@ -1,5 +1,10 @@
 <template>
   <div id="wrapper">
+    <div>
+      <h3>Found {{episodes.length}} files</h3>
+      <h5>Select files to download</h5>
+    </div>
+
     <div class="overflow">
       <ul class="list-group listOverflow">
         <li class="list-group-item" v-for="(episode,i) in episodes" :key="episode.xxx">
@@ -11,7 +16,7 @@
         </li>
       </ul>
     </div>
-    <button type="button" class="btn btn-primary btn-block" @click="confirm">Confirm</button>
+    <button type="button" class="btn btn-primary btn-block bottomB" @click="confirm">Confirm</button>
 
   </div>
 </template>
@@ -25,7 +30,7 @@
     name: 'download',
     data() {
       return {
-        episodes: '',
+        episodes: [],
         secondsToTimeString: Split.secondsToTimeString
 
       }
@@ -72,5 +77,10 @@
   .listOverflow {
     overflow-y: auto;
     height: 450px;
+  }
+
+  .bottomB {
+    position: fixed;
+    bottom: 0px;
   }
 </style>
