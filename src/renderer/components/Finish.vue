@@ -1,9 +1,10 @@
 <template>
   <div id="wrapper">
-       <div class="box">
+      <div class="box">
         <h4>Finished</h4>
         <p>created {{clips.length}} clips</p>
-        </div>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" @click="close">Close</button>
   </div>
 </template>
 
@@ -21,7 +22,12 @@ export default {
     this.clips = Split.getConvertedClips()
     console.log(this.clips);
   },
-  methods: {}
+  methods: {
+    close(){
+      
+      this.$router.push("landing-page")
+    }
+  }
 };
 </script>
 
