@@ -73,13 +73,13 @@
     <!--Output select-->
     <div class="input-group">
       <div class="form-group col filePath">
-        <input type="text" class="form-control f" id="endAt" v-model="outputPath" placeholder="please select a folder">
+        <input type="text" class="form-control" id="endAt" v-model="outputPath" placeholder="please select a folder">
       </div>
       <div class="btn btn-primary file-btn">
         <span>select folder</span>
         <input type="file" class="file-input" webkitdirectory directory @change="outputFolder" />
       </div>
-      <button :disabled="outputPath==null" type="button" class="convertButton btn btn-primary btn-block" @click="start">
+      <button :disabled="outputPath==null||outputPath==''" type="button" class="convertButton btn btn-primary btn-block" @click="start">
         {{download ? "Start downloading & converting":"Start converting" }}</button>
     </div>
 
