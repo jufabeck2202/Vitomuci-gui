@@ -70,15 +70,19 @@
         </div>
       </div>
     </div>
-    <div class="btn btn-primary file-btn">
-      <span>select folder</span>
-      <input type="file" class="file-input" webkitdirectory directory @change="outputFolder" />
+    <!--Output select-->
+    <div class="input-group">
+      <div class="form-group col filePath">
+        <input type="text" class="form-control f" id="endAt" v-model="outputPath" placeholder="please select a folder">
+      </div>
+      <div class="btn btn-primary file-btn">
+        <span>select folder</span>
+        <input type="file" class="file-input" webkitdirectory directory @change="outputFolder" />
+      </div>
+      <button :disabled="outputPath==null" type="button" class="convertButton btn btn-primary btn-block" @click="start">
+        {{download ? "Start downloading & converting":"Start converting" }}</button>
     </div>
-    <div class="form-group col">
-      <input type="text" class="form-control" id="endAt" v-model="outputPath" placeholder="please select a folder">
-    </div>
-    <button :disabled="outputPath==null" type="button" class="btn btn-primary btn-block" @click="start">
-      {{download ? "Start downloading & converting":"Start converting" }}</button>
+
     <v-dialog />
 
     <!-- progression modal -->
@@ -244,6 +248,7 @@
 
   .file-btn {
     position: relative;
+    margin-bottom: 11px
   }
 
   .file-btn input[type="file"] {
@@ -262,8 +267,20 @@
   .list-group-item {
     padding: 3px 10px
   }
-  .card { 
+
+  .card {
     margin-top: 10px;
     margin-right: 10px
+  }
+
+  .convertButton {
+    position: fixed;
+    bottom: 0px;
+  }
+  .fileSelect{
+    margin-top: 0px
+  }
+  .filePath{
+    margin-top: 11px
   }
 </style>
