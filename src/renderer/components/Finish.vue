@@ -9,26 +9,25 @@
 </template>
 
 <script>
-import Split from "@/services/split";
-const path = require("upath");
+import Split from '@/services/split'
+const path = require('upath')
 export default {
-  name: "finish",
-  data() {
+  name: 'finish',
+  data () {
     return {
       clips: []
-    };
+    }
   },
-  mounted() {
+  mounted () {
     this.clips = Split.getConvertedClips()
-    console.log(this.clips);
+    console.log(this.clips)
   },
   methods: {
-    close(){
-      
-      this.$router.push("landing-page")
+    close () {
+      this.$router.push('landing-page')
     }
   }
-};
+}
 </script>
 
 <style>

@@ -28,17 +28,17 @@
 
   export default {
     name: 'download',
-    data() {
+    data () {
       return {
         episodes: [],
         secondsToTimeString: Split.secondsToTimeString
 
       }
     },
-    mounted() {
+    mounted () {
       this.setChecked()
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Download.get().length) {
           vm.$router.push('landing-page')
@@ -47,7 +47,7 @@
     },
     components: {},
     methods: {
-      confirm() {
+      confirm () {
         let selectedEpisodes = []
         for (const episode of this.episodes) {
           if (episode.checked) {
@@ -57,7 +57,7 @@
         Download.set(selectedEpisodes)
         this.$router.push('videos')
       },
-      setChecked() {
+      setChecked () {
         let episodes = Download.get()
         for (const episode of episodes) {
           episode.checked = true
