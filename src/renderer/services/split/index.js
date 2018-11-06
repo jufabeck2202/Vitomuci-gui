@@ -95,7 +95,7 @@ async function splitTrack (outputDirectory, file, duration) {
   modal.info = `converting ${file.name}`
   // if you dont want seprate clips
   if (options.full) {
-    await segmentMp3(file.path, path.join(outputDirectory, file.name + '.mp3'), 0, duration)
+    await segmentMp3(file.path, path.join(outputDirectory, file.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp3'), 0, duration)
     clips.push({
       name: file.name,
       path: path.join(outputDirectory, file.name + '.mp3')
