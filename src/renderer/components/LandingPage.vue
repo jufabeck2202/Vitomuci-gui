@@ -71,9 +71,6 @@ const path = require('upath')
           destination: dest
         },
         function (err, data) {
-          // console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.')
-          console.log('err', err)
-          console.log('data', data)
 
           let ffmpegPath = path.join(
             dest,
@@ -92,16 +89,15 @@ const path = require('upath')
     methods: {
       searchUrl () {
         // initialize progress modal
-        this.$modal.show('progress')
         Url.getContent(this.url, this.modal).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
             new Notification('Wrong url format', {
               body: 'Please, insert youtube or podcast url',
-              // TODO: fix icon path
-              icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
             })
             return
           }
+          //start download
+          this.$modal.show('progress')
           // switch to download screen
           Download.set(episodes)
           this.$router.push('download')
