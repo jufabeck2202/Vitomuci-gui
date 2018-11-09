@@ -50,6 +50,13 @@
 
   export default {
     name: 'landing-page',
+    beforeRouteEnter (to, from, next) {
+      console.log("reset values")
+      Download.clear()
+      Split.clear()
+      Videos.clear()
+      next()
+    },
     data() {
       return {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',

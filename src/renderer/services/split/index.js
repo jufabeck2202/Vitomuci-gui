@@ -253,6 +253,10 @@ function getConvertedClips () {
   return clips
 }
 
+function clear () {
+  clips = []
+}
+
 /**
  * Cleans up the filename of the given files
  * Removes Brackets and the text inside them
@@ -281,5 +285,6 @@ export default {
   checkffmpeg,
   getFileLength,
   secondsToTimeString,
-  getConvertedClips
+  getConvertedClips,
+  clear
 }
