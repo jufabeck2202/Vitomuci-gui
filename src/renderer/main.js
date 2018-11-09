@@ -7,6 +7,10 @@ import App from './App'
 import router from './router'
 import store from './store'
 import VueAnalytics from 'vue-analytics'
+
+import virtualList from 'vue-virtual-scroll-list'
+Vue.component('virtual-list', virtualList)
+
 Vue.use(VueAnalytics, {
   id: 'UA-129015574-1'
 })

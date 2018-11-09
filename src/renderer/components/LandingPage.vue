@@ -99,6 +99,7 @@
     methods: {
       searchUrl () {
         // initialize progress modal
+        this.$modal.show('progress')
         Url.getContent(this.url, this.modal).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
             new Notification('Wrong url format', {
@@ -107,7 +108,6 @@
             return
           }
           // start download
-          this.$modal.show('progress')
           // switch to download screen
           Download.set(episodes)
           this.$router.push('download')

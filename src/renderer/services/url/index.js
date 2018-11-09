@@ -99,8 +99,6 @@ async function getContent (url, modal) {
             url: episode.enclosure.url,
             duration: episode.duration
           })
-          console.log(episode.duration)
-
           modal.progress++
         })
         return episodes

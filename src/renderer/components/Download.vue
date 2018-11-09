@@ -4,19 +4,16 @@
       <h3>Found {{episodes.length}} files</h3>
       <h5>Select files to download</h5>
     </div>
-
-    <div class="overflow">
-      <ul class="list-group listOverflow">
-        <li class="list-group-item" v-for="(episode,i) in episodes" :key="episode.xxx">
+    <virtual-list :size="55" :remain="8" wtag="ul">
+       <li class="list-group-item" v-for="(episode,i) in episodes" :key="i">
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" v-bind:id="i" v-model="episode.checked">
             <label class="custom-control-label" v-bind:for="i">{{episode.name}}</label>
             <span class="float-right">{{secondsToTimeString(episode.duration)}}</span>
           </div>
         </li>
-      </ul>
-    </div>
-    <button type="button" class="btn btn-primary btn-block bottomB" @click="confirm">Confirm</button>
+    </virtual-list>
+    <button type="button" class="btn btn-primary btn-block bottom" @click="confirm">Confirm</button>
 
   </div>
 </template>
@@ -24,7 +21,6 @@
 <script>
   import Download from '@/services/download'
   import Split from '@/services/split'
-  const path = require('upath')
 
   export default {
     name: 'download',
@@ -69,6 +65,7 @@
 </script>
 
 <style>
+/*
   .overflow {
     overflow: scroll;
     height: 300px;
@@ -78,6 +75,7 @@
     overflow-y: auto;
     height: 450px;
   }
+  */
 
   .bottomB {
     position: fixed;
