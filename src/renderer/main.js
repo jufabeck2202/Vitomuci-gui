@@ -6,6 +6,10 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
+import VueAnalytics from 'vue-analytics'
+Vue.use(VueAnalytics, {
+  id: 'UA-129015574-1'
+})
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios

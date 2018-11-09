@@ -21,9 +21,9 @@ async function download (output, progressObj) {
   let downloadedEpisodes = []
   progress = progressObj
   if (episodes[0].url.includes('youtube')) {
-    //downlad if youtube
-    fs.mkdirSync(path.join(output,"youtube"))
-    output = path.join(output,"youtube")
+    // downlad if youtube
+    fs.mkdirSync(path.join(output, 'youtube'))
+    output = path.join(output, 'youtube')
     for (let episode of episodes) {
       if (ytdl.validateURL(episode.url)) {
         let title = episode.name.replace(/[/\\?%*:|"<>&]/g, '-') // make sure there are no illeagale characters
@@ -35,9 +35,9 @@ async function download (output, progressObj) {
     }
     return downloadedEpisodes
   } else {
-    //download if podcast
-    fs.mkdirSync(path.join(output,"podcast"))
-    output = path.join(output,"podcast")
+    // download if podcast
+    fs.mkdirSync(path.join(output, 'podcast'))
+    output = path.join(output, 'podcast')
     for (const episode of episodes) {
       progress.info = `downloading ${episode.name}`
       await downloadPodcast(episode.url, path.join(output, episode.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp3'))

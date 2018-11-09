@@ -29,7 +29,7 @@ export default {
     close () {
       this.$router.push('landing-page')
     },
-     open () {
+    open () {
       shell.openItem(path.dirname(this.clips[0].path))
     }
   }

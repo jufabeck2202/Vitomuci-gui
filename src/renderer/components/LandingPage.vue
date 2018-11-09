@@ -41,14 +41,16 @@
   import Url from '@/services/url'
   import Download from '@/services/download'
   import Split from '@/services/split'
-  const { app } = require('electron').remote
+  const {
+    app
+  } = require('electron').remote
 
-const path = require('upath')
+  const path = require('upath')
   const ffbinaries = require('ffbinaries')
 
   export default {
     name: 'landing-page',
-    data () {
+    data() {
       return {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
         modal: {
@@ -57,10 +59,13 @@ const path = require('upath')
         }
       }
     },
+    track() {
+      this.$ga.page('/')
+    },
     components: {
       FileDropdown
     },
-    mounted () {
+    mounted() {
       // let dest = path.join(__dirname)
       let platform = ffbinaries.detectPlatform()
       let dest = path.join(app.getPath('userData'), 'ff')
@@ -71,7 +76,6 @@ const path = require('upath')
           destination: dest
         },
         function (err, data) {
-
           let ffmpegPath = path.join(
             dest,
             ffbinaries.getBinaryFilename('ffmpeg', platform)
@@ -87,27 +91,27 @@ const path = require('upath')
         })
     },
     methods: {
-      searchUrl () {
+      searchUrl() {
         // initialize progress modal
         Url.getContent(this.url, this.modal).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
             new Notification('Wrong url format', {
-              body: 'Please, insert youtube or podcast url',
+              body: 'Please, insert youtube or podcast url'
             })
             return
           }
-          //start download
+          // start download
           this.$modal.show('progress')
           // switch to download screen
           Download.set(episodes)
           this.$router.push('download')
         })
       },
-      handleFileChange (e) {
+      handleFileChange(e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles (newFiles) {
+      verifyFiles(newFiles) {
         // initialize progress modal
         this.modal.goal = newFiles.length
         this.$modal.show('progress')
