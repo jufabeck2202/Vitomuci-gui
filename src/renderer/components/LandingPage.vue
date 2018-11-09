@@ -56,7 +56,7 @@
       Videos.clear()
       next()
     },
-    data() {
+    data () {
       return {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
         modal: {
@@ -65,13 +65,13 @@
         }
       }
     },
-    track() {
+    track () {
       this.$ga.page('/')
     },
     components: {
       FileDropdown
     },
-    mounted() {
+    mounted () {
       // let dest = path.join(__dirname)
       let platform = ffbinaries.detectPlatform()
       let dest = path.join(app.getPath('userData'), 'ff')
@@ -97,7 +97,7 @@
         })
     },
     methods: {
-      searchUrl() {
+      searchUrl () {
         // initialize progress modal
         Url.getContent(this.url, this.modal).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
@@ -113,11 +113,11 @@
           this.$router.push('download')
         })
       },
-      handleFileChange(e) {
+      handleFileChange (e) {
         // Whenever the file changes, emit the 'input' event with the file data.
         this.verifyFiles(e.target.files)
       },
-      verifyFiles(newFiles) {
+      verifyFiles (newFiles) {
         // initialize progress modal
         this.modal.goal = newFiles.length
         this.$modal.show('progress')

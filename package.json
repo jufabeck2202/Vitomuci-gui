@@ -89,6 +89,7 @@
     "vue-listbox": "^1.0.0",
     "vue-router": "^3.0.1",
     "vue-toasted": "^1.1.24",
+    "vue-virtual-scroll-list": "^1.2.8",
     "vuex": "^3.0.1",
     "watchr": "^4.0.1",
     "youtube-dl": "^1.12.2",
