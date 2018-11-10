@@ -14,7 +14,7 @@
           </div>
         </li>
     </virtual-list>
-    <button type="button" class="btn btn-primary btn-block fixed-bottom" @click="confirm">Confirm</button>
+    <button :disabled="episodes.filter(function(e){return e.checked}).length<1" type="button" class="btn btn-primary btn-block fixed-bottom" @click="confirm">Confirm</button>
 
   </div>
 </template>
@@ -33,8 +33,11 @@
       }
     },
     mounted () {
-      this.episodes = Download.get()
-      
+      let episodes = Download.get()
+      episodes.forEach(e => {
+        e.checked = false
+      });
+      this.episodes = episodes
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
@@ -56,14 +59,10 @@
         this.$router.push('videos')
       },
       setChecked () {
-        //TODO: Simplify
-        let episodes = []
         for (const episode of this.episodes) {
           episode.checked = true
-          episodes.push(episode)
         }
-        this.episodes = episodes
-       
+
       }
     }
   }

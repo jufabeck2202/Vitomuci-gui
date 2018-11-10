@@ -83,11 +83,10 @@
     </div>
 
 
-    <nav class="navbar  fixed-bottom navbar-dark default-color">
-      <button :disabled="outputPath==null||outputPath==''" type="button" class="convertButton btn btn-primary btn-block"
+      <button :disabled="outputPath==null||outputPath==''" type="button" class="convertButton btn btn-primary btn-block fixed-bottom"
         @click="start">
         {{download ? "Start downloading & converting":"Start converting" }}</button>
-    </nav>
+    
     <v-dialog />
 
     <!-- progression modal -->
