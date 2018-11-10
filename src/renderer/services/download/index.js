@@ -41,7 +41,7 @@ async function download (output, progressObj) {
     for (const episode of episodes) {
       progress.info = `downloading ${episode.name}`
       await downloadPodcast(episode.url, path.join(output, episode.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp3'))
-      downloadedEpisodes.push({name: episode.name, path: path.join(output, episode.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp4')})
+      downloadedEpisodes.push({name: episode.name, path: path.join(output, episode.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp3')})
       progress.progress++
     }
     return downloadedEpisodes
