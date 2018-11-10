@@ -277,7 +277,7 @@
 
   .card-right {
     margin-top: 10px;
-    margin-right: 10px
+    margin-right: 10px;
   }
   .card-left {
     margin-top: 10px;

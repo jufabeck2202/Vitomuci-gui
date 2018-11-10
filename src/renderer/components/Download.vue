@@ -1,10 +1,15 @@
 <template>
   <div id="wrapper">
-    <div>
-            <button type="button" class="btn btn-primary btn-sm float-right" @click="setChecked">select all</button>
+    <div class="row">
 
-      <h3>Found {{episodes.length}} files</h3>
-      <h5>Select files to download</h5>
+      <div class="col">
+        <h3>Found {{episodes.length}} files</h3>
+        <h5>Select files to download</h5>
+      </div>
+      <div class="col">
+        <button type="button" class="btn btn-primary btn-sm" @click="setChecked">select all</button>
+
+      </div>
     </div>
     <div class="card">
       <div class="card-body">
@@ -81,7 +86,8 @@
     border: 1px solid #ddd;
     -webkit-overflow-scrolling: touch;
   }
-  .card{
+
+  .card {
     margin-left: 10px;
     margin-right: 10px
   }
