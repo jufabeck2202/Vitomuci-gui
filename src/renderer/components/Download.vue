@@ -2,6 +2,7 @@
   <div id="wrapper">
     <div>
       <h3>Found {{episodes.length}} files</h3>
+      <button type="button" class="btn btn-primary btn-sm float-right" @click="setChecked">select all</button>
       <h5>Select files to download</h5>
     </div>
     <virtual-list :size="55" :remain="8" wtag="ul">
@@ -13,7 +14,7 @@
           </div>
         </li>
     </virtual-list>
-    <button type="button" class="btn btn-primary btn-block bottom" @click="confirm">Confirm</button>
+    <button type="button" class="btn btn-primary btn-block fixed-bottom" @click="confirm">Confirm</button>
 
   </div>
 </template>
@@ -32,7 +33,8 @@
       }
     },
     mounted () {
-      this.setChecked()
+      this.episodes = Download.get()
+      
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
@@ -54,31 +56,19 @@
         this.$router.push('videos')
       },
       setChecked () {
-        let episodes = Download.get()
-        for (const episode of episodes) {
+        //TODO: Simplify
+        let episodes = []
+        for (const episode of this.episodes) {
           episode.checked = true
+          episodes.push(episode)
         }
         this.episodes = episodes
+       
       }
     }
   }
 </script>
 
 <style>
-/*
-  .overflow {
-    overflow: scroll;
-    height: 300px;
-  }
 
-  .listOverflow {
-    overflow-y: auto;
-    height: 450px;
-  }
-  */
-
-  .bottomB {
-    position: fixed;
-    bottom: 0px;
-  }
 </style>
