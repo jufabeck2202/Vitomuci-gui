@@ -2,14 +2,18 @@
   <div>
     <div class="row">
       <div class="col">
-        <ul class="list-group listOverflow">
-          <li class="list-group-item" v-for="(episode) in episodes" :key="episode.xxx">{{options.rename?renamePreview(episode.name):episode.name}}<span
-              class="float-right">{{secondsToTimeString(episode.duration)}}</span></li>
-        </ul>
+        <div class="card card-left">
+          <div class="card-body">
+            <virtual-list :size="50" :remain="8" bench="20" wtag="ul" class="list">
+              <li class="list-group-item cut-text" v-for="(episode) in episodes" :key="episode.xxx">{{options.rename?renamePreview(episode.name):episode.name}}<span
+                  class="float-right">{{secondsToTimeString(episode.duration)}}</span></li>
+            </virtual-list>
+          </div>
+        </div>
       </div>
 
-      <div class="col">
-        <div class="card">
+      <div class="col-5">
+        <div class="card card-right">
           <div class="card-body">
             <h3 class="card-title">Settings</h3>
             <h6 class="card-title">Average Duration: {{averageDuration}}</h6>
@@ -54,12 +58,12 @@
               <div class="form-row">
                 <!-- Start -->
                 <div class="form-group col">
-                  <label for="start">Start at:</label>
+                  <label for="start">Cut from start:</label>
                   <input type="text" class="form-control" id="startAt" v-model="options.startAt" placeholder="mm:ss">
                 </div>
                 <!-- End -->
                 <div class="form-group col">
-                  <label for="end">End at:</label>
+                  <label for="end">Cut from end:</label>
                   <input type="text" class="form-control" id="endAt" v-model="options.endAt" placeholder="mm:ss">
                 </div>
               </div>
@@ -70,23 +74,22 @@
         </div>
       </div>
     </div>
+
     <!--Output select-->
-    <div class="input-group">
-      <div class="form-group col filePath">
-        <input type="text" class="form-control" id="endAt" v-model="outputPath" placeholder="please select a folder">
+    <div class="fixed-bottom">
+      <div class="input-group">
+        <div class="form-group col filePath">
+          <input type="text" class="form-control" id="endAt" v-model="outputPath" placeholder="please select a folder">
+        </div>
+        <div class="btn btn-primary file-btn">
+          <span>select folder</span>
+          <input type="file" class="file-input" webkitdirectory directory @change="outputFolder" />
+        </div>
       </div>
-      <div class="btn btn-primary file-btn">
-        <span>select folder</span>
-        <input type="file" class="file-input" webkitdirectory directory @change="outputFolder" />
-      </div>
-      
-    </div>
-
-
-      <button :disabled="outputPath==null||outputPath==''" type="button" class="convertButton btn btn-primary btn-block fixed-bottom"
+      <button :disabled="outputPath==null||outputPath==''" type="button" class="convertButton btn btn-primary btn-block"
         @click="start">
         {{download ? "Start downloading & converting":"Start converting" }}</button>
-    
+    </div>
     <v-dialog />
 
     <!-- progression modal -->
@@ -113,7 +116,7 @@
   const store = new Store()
   export default {
     name: 'download',
-    data () {
+    data() {
       return {
         secondsToTimeString: Split.secondsToTimeString,
         download: false,
@@ -138,7 +141,7 @@
         }
       }
     },
-    mounted () {
+    mounted() {
       this.getDefault()
       if (Download.get().length) {
         this.download = true
@@ -151,7 +154,7 @@
       this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g, '')
       this.getAverageDuration()
     },
-    beforeRouteEnter (to, from, next) {
+    beforeRouteEnter(to, from, next) {
       next(vm => {
         if (!Video.get().length && !Download.get().length) {
           vm.$router.push('landing-page')
@@ -160,7 +163,7 @@
     },
     components: {},
     methods: {
-      start () {
+      start() {
         this.$modal.show('progress')
         if (this.download) {
           Download.download(this.outputPath, this.progress).then(
@@ -176,36 +179,36 @@
           this.startSplitting(this.episodes)
         }
       },
-      folderExists () {
+      folderExists() {
         this.$modal.show('dialog', {
           title: 'output folder audio already exist',
           text: '',
           buttons: [{
-            title: 'replace folder',
-            handler: () => {
-              alert('Woot!')
+              title: 'replace folder',
+              handler: () => {
+                alert('Woot!')
+              }
+            },
+            {
+              title: 'use existing folder', // Button title
+              default: true, // Will be triggered by default if 'Enter' pressed.
+              handler: () => {} // Button click handler
+            },
+            {
+              title: 'Close'
             }
-          },
-          {
-            title: 'use existing folder', // Button title
-            default: true, // Will be triggered by default if 'Enter' pressed.
-            handler: () => {} // Button click handler
-          },
-          {
-            title: 'Close'
-          }
           ]
         })
       },
 
-      startSplitting (files) {
+      startSplitting(files) {
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options, this.outputPath, this.progress).then(clips => {
           this.$router.push('finish')
         })
       },
       // preview rename
-      renamePreview (name) {
+      renamePreview(name) {
         let removeRound = name.replace(/ *\([^)]*\) */g, '')
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
@@ -213,7 +216,7 @@
         name = removeRaw
         return name.trim()
       },
-      saveDefault () {
+      saveDefault() {
         store.set('options', this.options)
 
         let toast = this.$toasted.success('Saved', {
@@ -222,13 +225,13 @@
           duration: 1000
         })
       },
-      getDefault () {
+      getDefault() {
         let options = store.get('options')
         if (options) {
           this.options = options
         }
       },
-      getAverageDuration () {
+      getAverageDuration() {
         let total = 0
         for (const ep of this.episodes) {
           if (ep.duration) {
@@ -237,7 +240,7 @@
         }
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
-      outputFolder (e) {
+      outputFolder(e) {
         this.outputPath = e.target.files[0].path
       }
     }
@@ -272,17 +275,15 @@
     padding: 3px 10px
   }
 
-  .card {
+  .card-right {
     margin-top: 10px;
     margin-right: 10px
   }
-
-  /*
-  .convertButton {
-    position: fixed;
-    bottom: 0px;
+  .card-left {
+    margin-top: 10px;
+    margin-left: 10px
   }
-  */
+
   .fileSelect {
     margin-top: 0px
   }
@@ -290,4 +291,12 @@
   .filePath {
     margin-top: 11px
   }
+
+  .list {
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    -webkit-overflow-scrolling: touch;
+  }
+
 </style>
