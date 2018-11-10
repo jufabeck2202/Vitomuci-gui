@@ -18,7 +18,7 @@
             <h3 class="card-title">Settings</h3>
             <h6 class="card-title">Average Duration: {{averageDuration}}</h6>
             <!-- Default form login -->
-            <form class="text-center">
+            <form class="">
               <!-- Create cover checkbox-->
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" v-model="options.cover" id="cover">
@@ -35,27 +35,32 @@
                 <label class="custom-control-label" for="combine">Combine clips into one album</label>
               </div>
               <!-- Album -->
-              <div class="form-group col" v-if="options.metadata">
+              <div class="form-group" v-if="options.metadata">
                 <label for="Album">Album Name</label>
                 <input type="text" class="form-control" id="album" v-model="options.album" placeholder="album name">
               </div>
-              <!-- Radio select full-->
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" value="full" v-model="options.split" id="full" name="split">
-                <label class="custom-control-label" for="full">Full</label>
+              <div class="text-center" >
+              <label for="full">Split into smaller Clips:</label>
               </div>
-              <!-- Radio select split-->
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" value="split" v-model="options.split" id="split" name="split"
-                  checked>
-                <label class="custom-control-label" for="split">Split</label>
+              <div class="row">
+                <!-- Radio select full-->
+                <div class="col custom-control custom-radio text-center">
+                  <input type="radio" class="custom-control-input" value="full" v-model="options.split" id="full" name="split">
+                  <label class="custom-control-label" for="full">Full</label>
+                </div>
+                <!-- Radio select split-->
+                <div class="col custom-control custom-radio text-center">
+                  <input type="radio" class="custom-control-input" value="split" v-model="options.split" id="split"
+                    name="split" checked>
+                  <label class="custom-control-label" for="split">Split</label>
+                </div>
               </div>
               <!-- Duration -->
-              <div class="form-group col" v-if="options.split=='split'">
+              <div class="form-group col text-center" v-if="options.split=='split'">
                 <label for="duration">Duration</label>
                 <input type="text" class="form-control" id="duration" v-model="options.duration" placeholder="mm:ss">
               </div>
-              <div class="form-row">
+              <div class="form-row text-center">
                 <!-- Start -->
                 <div class="form-group col">
                   <label for="start">Cut from start:</label>
@@ -279,6 +284,7 @@
     margin-top: 10px;
     margin-right: 10px;
   }
+
   .card-left {
     margin-top: 10px;
     margin-left: 10px
@@ -298,5 +304,4 @@
     border: 1px solid #ddd;
     -webkit-overflow-scrolling: touch;
   }
-
 </style>
