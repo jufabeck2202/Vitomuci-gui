@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <img src="../assets/logo.png" alt="" width="300px"/>
     <main>
       <div class="row">
         <div class="col">
@@ -19,7 +20,6 @@
             <input class="file-input" type="file" name="resume" webkitdirectory directory @change="handleFileChange" />
           </div>
           <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
-
         </div>
       </div>
     </main>
