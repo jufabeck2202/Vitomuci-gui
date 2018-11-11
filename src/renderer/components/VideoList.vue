@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col">
+      <div class="col video-col">
         <div class="card card-left">
           <div class="card-body">
             <virtual-list :size="50" :remain="8" bench="20" wtag="ul" class="list">
@@ -297,7 +297,9 @@
   .filePath {
     margin-top: 11px
   }
-
+  .video-col{
+    padding-right: 0px
+  }
   .list {
     background: #fff;
     border-radius: 3px;
