@@ -122,8 +122,7 @@
         this.modal.goal = newFiles.length
         this.$modal.show('progress')
         Videos.getFiles(newFiles, this.modal).then(files => {
-          let verifiedFiles = Videos.verifyFiles(files)
-          if (!verifiedFiles.length) {
+          if ( files =="undefined" || !files.length || files.length === "undefined") {
             this.$modal.hide('progress')
             new Notification('Wrong format', {
               body: 'Please, drop a video(s)',
@@ -132,7 +131,7 @@
             })
             return
           }
-          Videos.set(verifiedFiles)
+          Videos.set(files)
           this.$router.push('videos')
         })
       }

@@ -17,12 +17,13 @@ let videos = []
  * @param {String} input directory or file
  * @returns {Promise} array with files
  */
-async function getFiles (files, modal) {
+async function getFiles(files, modal) {
   try {
     let foundFiles = []
     for (const file of files) {
       if (fs.lstatSync(file.path).isDirectory()) {
         let folderFiles = fs.readdirSync(file.path)
+        folderFiles = verifyFiles(folderFiles)
         for (const item of folderFiles) {
           let duration = await split.getFileLength(file.path)
           foundFiles.push({
@@ -33,17 +34,21 @@ async function getFiles (files, modal) {
         }
         return foundFiles
       } else if (fileExists.sync(file.path)) {
-        let duration = await split.getFileLength(file.path)
-        foundFiles.push({
-          name: path.basename(file.name, path.extname(file.name)),
-          path: file.path,
-          duration: duration
-        })
+        if (videoFormats.includes(path.extname(file.path))) {
+          let duration = await split.getFileLength(file.path)
+          foundFiles.push({
+            name: path.basename(file.name, path.extname(file.name)),
+            path: file.path,
+            duration: duration
+          })
+        }
       }
       modal.progress++
     }
     return foundFiles.sort((a, b) => a.name.localeCompare(b.name))
-  } catch (error) { console.log(error) }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 /**
@@ -60,15 +65,15 @@ function verifyFiles (files) {
   return mediaFiles
 }
 
-function set (v) {
+function set(v) {
   videos = v
 }
 
-function get () {
+function get() {
   return videos
 }
 
-function clear () {
+function clear() {
   videos = []
 }
 
