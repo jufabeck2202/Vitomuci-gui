@@ -17,7 +17,7 @@
           event.preventDefault()
         })
       })
-    },
+    }
   }
 </script>
 

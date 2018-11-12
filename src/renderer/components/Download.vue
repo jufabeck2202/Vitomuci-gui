@@ -36,21 +36,21 @@
 
   export default {
     name: 'download',
-    data() {
+    data () {
       return {
         episodes: [],
         secondsToTimeString: Split.secondsToTimeString
 
       }
     },
-    mounted() {
+    mounted () {
       let episodes = Download.get()
       episodes.forEach(e => {
         e.checked = false
-      });
+      })
       this.episodes = episodes
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Download.get().length) {
           vm.$router.push('landing-page')
@@ -59,7 +59,7 @@
     },
     components: {},
     methods: {
-      confirm() {
+      confirm () {
         let selectedEpisodes = []
         for (const episode of this.episodes) {
           if (episode.checked) {
@@ -69,11 +69,10 @@
         Download.set(selectedEpisodes)
         this.$router.push('videos')
       },
-      setChecked() {
+      setChecked () {
         for (const episode of this.episodes) {
           episode.checked = true
         }
-
       }
     }
   }

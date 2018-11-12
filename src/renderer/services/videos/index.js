@@ -17,7 +17,7 @@ let videos = []
  * @param {String} input directory or file
  * @returns {Promise} array with files
  */
-async function getFiles(files, modal) {
+async function getFiles (files, modal) {
   try {
     let foundFiles = []
     for (const file of files) {
@@ -65,15 +65,15 @@ function verifyFiles (files) {
   return mediaFiles
 }
 
-function set(v) {
+function set (v) {
   videos = v
 }
 
-function get() {
+function get () {
   return videos
 }
 
-function clear() {
+function clear () {
   videos = []
 }
 

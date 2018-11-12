@@ -121,7 +121,7 @@
   const store = new Store()
   export default {
     name: 'download',
-    data() {
+    data () {
       return {
         secondsToTimeString: Split.secondsToTimeString,
         download: false,
@@ -146,7 +146,7 @@
         }
       }
     },
-    mounted() {
+    mounted () {
       this.getDefault()
       if (Download.get().length) {
         this.download = true
@@ -159,7 +159,7 @@
       this.options.album = this.episodes[0].name.replace(/(\s*-*\s*\d+\s*)+/g, '')
       this.getAverageDuration()
     },
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter (to, from, next) {
       next(vm => {
         if (!Video.get().length && !Download.get().length) {
           vm.$router.push('landing-page')
@@ -168,7 +168,7 @@
     },
     components: {},
     methods: {
-      start() {
+      start () {
         this.$modal.show('progress')
         if (this.download) {
           Download.download(this.outputPath, this.progress).then(
@@ -184,36 +184,36 @@
           this.startSplitting(this.episodes)
         }
       },
-      folderExists() {
+      folderExists () {
         this.$modal.show('dialog', {
           title: 'output folder audio already exist',
           text: '',
           buttons: [{
-              title: 'replace folder',
-              handler: () => {
-                alert('Woot!')
-              }
-            },
-            {
-              title: 'use existing folder', // Button title
-              default: true, // Will be triggered by default if 'Enter' pressed.
-              handler: () => {} // Button click handler
-            },
-            {
-              title: 'Close'
+            title: 'replace folder',
+            handler: () => {
+              alert('Woot!')
             }
+          },
+          {
+            title: 'use existing folder', // Button title
+            default: true, // Will be triggered by default if 'Enter' pressed.
+            handler: () => {} // Button click handler
+          },
+          {
+            title: 'Close'
+          }
           ]
         })
       },
 
-      startSplitting(files) {
+      startSplitting (files) {
         this.options.full = this.options.split === 'full'
         Split.split(files, this.options, this.outputPath, this.progress).then(clips => {
           this.$router.push('finish')
         })
       },
       // preview rename
-      renamePreview(name) {
+      renamePreview (name) {
         let removeRound = name.replace(/ *\([^)]*\) */g, '')
         let removeSquare = removeRound.replace(/ *\[[^)]*\] */g, '')
         let removeSwift = removeSquare.replace(/ *\{[^)]*\} */g, '')
@@ -221,7 +221,7 @@
         name = removeRaw
         return name.trim()
       },
-      saveDefault() {
+      saveDefault () {
         store.set('options', this.options)
 
         let toast = this.$toasted.success('Saved', {
@@ -230,13 +230,13 @@
           duration: 1000
         })
       },
-      getDefault() {
+      getDefault () {
         let options = store.get('options')
         if (options) {
           this.options = options
         }
       },
-      getAverageDuration() {
+      getAverageDuration () {
         let total = 0
         for (const ep of this.episodes) {
           if (ep.duration) {
@@ -245,7 +245,7 @@
         }
         this.averageDuration = Split.secondsToTimeString(total / this.episodes.length)
       },
-      outputFolder(e) {
+      outputFolder (e) {
         this.outputPath = e.target.files[0].path
       }
     }
