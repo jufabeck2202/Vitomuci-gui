@@ -98,7 +98,8 @@ async function splitTrack (outputDirectory, file, duration) {
     await segmentMp3(file.path, path.join(outputDirectory, file.name.replace(/[/\\?%*:|"<>&]/g, '-') + '.mp3'), 0, duration)
     clips.push({
       name: file.name,
-      path: path.join(outputDirectory, file.name + '.mp3')
+      path: path.join(outputDirectory, file.name + '.mp3'),
+      audio: 'eng'
     })
     return
   }
@@ -110,7 +111,8 @@ async function splitTrack (outputDirectory, file, duration) {
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration)
     clips.push({
       name: getSegmentName(file.name, durationIndex, durationIndex + options.duration),
-      path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration))
+      path: path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)),
+      audio: 'eng'
     })
     durationIndex += options.duration
     parts++
@@ -180,7 +182,23 @@ function getFileLength (file) {
   return new Promise((resolve, reject) => {
     ffprobe(file, (err, probeData) => {
       if (err) reject(err)
+      //temp
+      getStreams(file)
       resolve(probeData.format.duration)
+    })
+  })
+}
+
+/**
+ * Get audio Streams
+ * @param {*} file
+ */
+function getStreams (file) {
+  return new Promise((resolve, reject) => {
+    ffprobe(file, (err, probeData) => {
+      if (err) reject(err)
+      console.log(file)
+      resolve(probeData.streams)
     })
   })
 }
