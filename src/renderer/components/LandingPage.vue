@@ -124,6 +124,7 @@
         Videos.getFiles(newFiles, this.modal).then(files => {
           let verifiedFiles = Videos.verifyFiles(files)
           if (!verifiedFiles.length) {
+            this.$modal.hide('progress')
             new Notification('Wrong format', {
               body: 'Please, drop a video(s)',
               // TODO: fix icon path
