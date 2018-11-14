@@ -197,7 +197,7 @@ function getStreams (file) {
   return new Promise((resolve, reject) => {
     ffprobe(file, (err, probeData) => {
       if (err) reject(err)
-      console.log(file)
+      console.log(probeData)
       resolve(probeData.streams)
     })
   })

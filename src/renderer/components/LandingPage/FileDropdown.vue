@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="dropzone">
-      <div>drop files here</div>
+      <div>drag and drop video files...</div>
       <input type="file" multiple />
     </div>
   </div>
@@ -49,8 +49,8 @@
     border: 4px solid black;
     border-radius: 1px;
     color: black;
-    font: bold 24px/200px arial;
-    height: 200px;
+    font: bold 24px/260px arial;
+    height: 300px;
     margin: 10px;
     text-align: center;
     width: auto;
