@@ -1,6 +1,9 @@
 <template>
   <div id="wrapper">
-    <img src="../assets/logo.png" alt="" width="300px"/>
+    <div class="container text-center logo">
+      <img src="../assets/logo.png" alt="" width="400px" />
+    </div>
+    <hr class="container" style="margin-bottom:20px">
     <main>
       <div class="row">
         <div class="col">
@@ -9,15 +12,21 @@
           <button type="button" class="btn btn-primary" v-on:click="searchUrl">Download</button>
         </div>
         <div class="col">
-          <div class="icon-choose-image btn btn-primary file-btn animated fadeIn">
-            <i class="fa fa-upload pr-2" aria-hidden="true"></i>
-            <span> Choose file(s)…</span>
-            <input class="file-input" multiple type="file" name="resume" @change="handleFileChange" />
-          </div>
-          <div class="icon-choose-image btn btn-primary file-btn animated fadeIn">
-            <i class="fa fa-upload pr-2" aria-hidden="true"></i>
-            <span> Choose folder…</span>
-            <input class="file-input" type="file" name="resume" webkitdirectory directory @change="handleFileChange" />
+          <div class="row">
+            <div class="col">
+            <div class="icon-choose-image btn btn-block btn-outline-primary waves-effect file-btn">
+              <i class="fa fa-upload pr-2" aria-hidden="true"></i>
+              <span> Choose file(s)…</span>
+              <input class="file-input" multiple type="file" name="resume" @change="handleFileChange" />
+            </div>
+            </div>
+            <div class="col">
+            <div class="icon-choose-image btn btn-block btn-outline-primary waves-effect file-btn">
+              <i class="fa fa-upload pr-2" aria-hidden="true"></i>
+              <span> Choose folder…</span>
+              <input class="file-input" type="file" name="resume" webkitdirectory directory @change="handleFileChange" />
+            </div>
+            </div>
           </div>
           <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
         </div>
@@ -36,47 +45,47 @@
 </template>
 
 <script>
-  import FileDropdown from './LandingPage/FileDropdown'
-  import Videos from '@/services/videos'
-  import Url from '@/services/url'
-  import Download from '@/services/download'
-  import Split from '@/services/split'
+  import FileDropdown from "./LandingPage/FileDropdown";
+  import Videos from "@/services/videos";
+  import Url from "@/services/url";
+  import Download from "@/services/download";
+  import Split from "@/services/split";
   const {
     app
-  } = require('electron').remote
+  } = require("electron").remote;
 
-  const path = require('upath')
-  const ffbinaries = require('ffbinaries')
+  const path = require("upath");
+  const ffbinaries = require("ffbinaries");
 
   export default {
-    name: 'landing-page',
-    beforeRouteEnter (to, from, next) {
-      Download.clear()
-      Split.clear()
-      Videos.clear()
-      next()
+    name: "landing-page",
+    beforeRouteEnter(to, from, next) {
+      Download.clear();
+      Split.clear();
+      Videos.clear();
+      next();
     },
-    data () {
+    data() {
       return {
-        url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
+        url: "https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8",
         modal: {
           progress: 0,
           goal: 0
         }
-      }
+      };
     },
-    track () {
-      this.$ga.page('/')
+    track() {
+      this.$ga.page("/");
     },
     components: {
       FileDropdown
     },
-    mounted () {
+    mounted() {
       // let dest = path.join(__dirname)
-      let platform = ffbinaries.detectPlatform()
-      let dest = path.join(app.getPath('userData'), 'ff')
+      let platform = ffbinaries.detectPlatform();
+      let dest = path.join(app.getPath("userData"), "ff");
       ffbinaries.downloadFiles(
-        ['ffprobe', 'ffmpeg'], {
+        ["ffprobe", "ffmpeg"], {
           platform: platform,
           quiet: true,
           destination: dest
@@ -84,59 +93,64 @@
         function (err, data) {
           let ffmpegPath = path.join(
             dest,
-            ffbinaries.getBinaryFilename('ffmpeg', platform)
-          )
+            ffbinaries.getBinaryFilename("ffmpeg", platform)
+          );
           let ffprobePath = path.join(
             dest,
-            ffbinaries.getBinaryFilename('ffprobe', platform)
-          )
-          Split.checkffmpeg(ffmpegPath, ffprobePath)
+            ffbinaries.getBinaryFilename("ffprobe", platform)
+          );
+          Split.checkffmpeg(ffmpegPath, ffprobePath);
 
           // ffmpeg.setFfmpegPath(ffmpegPath);
           // ffmpeg.setFfprobePath(ffprobePath);
-        })
+        }
+      );
     },
     methods: {
-      searchUrl () {
+      searchUrl() {
         // initialize progress modal
-        this.$modal.show('progress')
+        this.$modal.show("progress");
         Url.getContent(this.url, this.modal).then(episodes => {
           if (episodes === undefined || episodes.length === 0) {
-            new Notification('Wrong url format', {
-              body: 'Please, insert youtube or podcast url'
-            })
-            return
+            new Notification("Wrong url format", {
+              body: "Please, insert youtube or podcast url"
+            });
+            return;
           }
           // start download
           // switch to download screen
-          Download.set(episodes)
-          this.$router.push('download')
-        })
+          Download.set(episodes);
+          this.$router.push("download");
+        });
       },
-      handleFileChange (e) {
+      handleFileChange(e) {
         // Whenever the file changes, emit the 'input' event with the file data.
-        this.verifyFiles(e.target.files)
+        this.verifyFiles(e.target.files);
       },
-      verifyFiles (newFiles) {
+      verifyFiles(newFiles) {
         // initialize progress modal
-        this.modal.goal = newFiles.length
-        this.$modal.show('progress')
+        this.modal.goal = newFiles.length;
+        this.$modal.show("progress");
         Videos.getFiles(newFiles, this.modal).then(files => {
-          if (files == 'undefined' || !files.length || files.length === 'undefined') {
-            this.$modal.hide('progress')
-            new Notification('Wrong format', {
-              body: 'Please, drop a video(s)',
+          if (
+            files == "undefined" ||
+            !files.length ||
+            files.length === "undefined"
+          ) {
+            this.$modal.hide("progress");
+            new Notification("Wrong format", {
+              body: "Please, drop a video(s)",
               // TODO: fix icon path
-              icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
-            })
-            return
+              icon: path.join(__dirname, "/dist/imgs/logo--assets.png")
+            });
+            return;
           }
-          Videos.set(files)
-          this.$router.push('videos')
-        })
+          Videos.set(files);
+          this.$router.push("videos");
+        });
       }
     }
-  }
+  };
 </script>
 
 <style>
@@ -183,5 +197,14 @@
   .strike>span:after {
     left: 100%;
     margin-left: 15px;
+  }
+
+  .logo {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  #wrapper{
+    margin-left: 20px;  
+    margin-right:20px;  
   }
 </style>
