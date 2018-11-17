@@ -283,11 +283,17 @@
   .card-right {
     margin-top: 10px;
     margin-right: 10px;
+    
   }
 
   .card-left {
     margin-top: 10px;
-    margin-left: 10px
+    margin-left: 10px;
+    position: absolute;
+    top: 100px;
+    bottom: 0;
+    width: 100%; 
+
   }
 
   .fileSelect {
