@@ -182,7 +182,7 @@ function getFileLength (file) {
   return new Promise((resolve, reject) => {
     ffprobe(file, (err, probeData) => {
       if (err) reject(err)
-      //temp
+      // temp
       getStreams(file)
       resolve(probeData.format.duration)
     })
