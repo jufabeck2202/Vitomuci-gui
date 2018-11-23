@@ -55,7 +55,7 @@ async function download (output, progressObj) {
  */
 async function downloadVideo (url, dir) {
   return new Promise((resolve, reject) => {
-    ytdl(url,{quality: 'highestaudio'})
+    ytdl(url,{quality: 'highest'})
       .pipe(fs.createWriteStream(dir)).on('finish', () => {
         resolve(dir)
       })
