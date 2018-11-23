@@ -50,7 +50,7 @@ async function getPlaylist (url) {
 }
 
 /**
- * Gets the title of a video
+ * Gets the duration of a video
  * @param {} url
  */
 async function getVideoDuration (url) {
@@ -58,6 +58,19 @@ async function getVideoDuration (url) {
     ytdl.getInfo(url, (err, info) => {
       if (err) throw reject(err)
       resolve(info.length_seconds)
+    })
+  })
+}
+
+/**
+ * Gets the title of a video
+ * @param {} url
+ */
+async function getVideoTitle(url) {
+  return new Promise((resolve, reject) => {
+    ytdl.getInfo(url, (err, info) => {
+      if (err) throw reject(err)
+      resolve(info.title)
     })
   })
 }
@@ -84,8 +97,18 @@ async function getContent (url, modal) {
           }
         }
       } catch (error) {
-        throw error
+        //check single url
+        try {
+          modal.goal = 1
+          let duration = await getVideoDuration(url)
+          let name = await getVideoTitle(url)
+          episodes.push({name:name,url:url,duration:duration})
+          modal.progress++
+        } catch (error) {
+          episodes = []
+        }
       }
+      console.log(episodes)
       return episodes
     } else {
       // check for podcast
