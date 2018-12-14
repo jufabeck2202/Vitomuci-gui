@@ -112,9 +112,10 @@ export default {
           )
           Split.checkffmpeg(ffmpegPath, ffprobePath)
           //hide ffmpeg modal
-          this.$modal.hide('ffmpegDownload')
         }
       )
+      this.$modal.hide('ffmpegDownload')
+
   },
     methods: {
       searchUrl () {
