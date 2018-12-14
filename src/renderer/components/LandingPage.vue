@@ -125,7 +125,6 @@ export default {
     FileDropdown
   },
   mounted() {
-    let platform = ffbinaries.detectPlatform();
     let dest = path.join(app.getPath("userData"), "ff");
     //check if binaries are found:
     let binaries = ffbinaries.locateBinariesSync(["ffmpeg", "ffprobe"], {
@@ -140,6 +139,7 @@ export default {
       this.binariesDownloaded = true;
       this.setFfPath();
     } else {
+      let platform = ffbinaries.detectPlatform();
       this.$modal.show("ffmpegDownload");
       ffbinaries.downloadFiles(
         ["ffmpeg", "ffprobe"],
@@ -149,8 +149,9 @@ export default {
           destination: dest,
           tickerFn: this.ffbinariesProgress
         },
-        function(err, data) {
+        (err, data) =>{
           this.setFfPath();
+          this.$modal.hide("ffmpegDownload");
         }
       );
     }
