@@ -7,7 +7,7 @@
         <h5>Select files to download</h5>
       </div>
       <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" @click="setChecked">select all</button>
+        <button type="button" class="btn btn-primary btn-sm float-right select-all" @click="setChecked">select all</button>
 
       </div>
     </div>
@@ -17,7 +17,7 @@
           <li class="list-group-item list" v-for="(episode,i) in episodes" :key="i">
             <div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" v-bind:id="i" v-model="episode.checked">
-              <label class="custom-control-label" v-bind:for="i">{{episode.name}}</label>
+              <label class="custom-control-label episode-name" v-bind:for="i">{{episode.name}}</label>
               <span class="float-right">{{secondsToTimeString(episode.duration)}}</span>
             </div>
           </li>
@@ -84,10 +84,17 @@
     border-radius: 3px;
     border: 1px solid #ddd;
     -webkit-overflow-scrolling: touch;
+    
   }
 
   .card {
     margin-left: 10px;
     margin-right: 10px
+  }
+  .select-all{
+    margin-top:30px
+  }
+  .episode-name{
+    max-width: 400px;
   }
 </style>
