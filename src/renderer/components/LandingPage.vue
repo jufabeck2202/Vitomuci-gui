@@ -41,6 +41,15 @@
         </div>
       </div>
     </modal>
+     <modal name="ffmpegDownload" height="auto" :clickToClose="false" :adaptive="true">
+      <div class="box">
+        <h4>Downloading ffmpeg</h4>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0"
+            :style="{ 'width': (ffmpegDownloadProgress*100)+'%' }" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -70,8 +79,9 @@ export default {
         url: 'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
         modal: {
           progress: 0,
-          goal: 0
-        }
+          goal: 0,
+        },
+        ffmpegDownloadProgress:0
       }
   },
     track () {
@@ -83,11 +93,13 @@ export default {
     mounted () {
       let platform = ffbinaries.detectPlatform()
       let dest = path.join(app.getPath('userData'), 'ff')
+      this.$modal.show('ffmpegDownload')
       ffbinaries.downloadFiles(
         ['ffmpeg', 'ffprobe'], {
           platform: platform,
           quiet: false,
-          destination: dest
+          destination: dest,
+          tickerFn:this.ffbinariesProgress
         },
         function (err, data) {
           let ffmpegPath = path.join(
@@ -99,9 +111,8 @@ export default {
             ffbinaries.getBinaryFilename('ffprobe', platform)
           )
           Split.checkffmpeg(ffmpegPath, ffprobePath)
-
-        // ffmpeg.setFfmpegPath(ffmpegPath);
-        // ffmpeg.setFfprobePath(ffprobePath);
+          //hide ffmpeg modal
+          this.$modal.hide('ffmpegDownload')
         }
       )
   },
@@ -147,6 +158,10 @@ export default {
           Videos.set(files)
           this.$router.push('videos')
         })
+      },
+      ffbinariesProgress(data){
+        console.log('Downloading ' + (data.progress * 100).toFixed(1))
+        this.ffmpegDownloadProgress = data.progress;
       }
     }
   }
