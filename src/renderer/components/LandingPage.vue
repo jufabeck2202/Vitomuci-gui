@@ -139,6 +139,7 @@ export default {
       this.binariesDownloaded = true;
       this.setFfPath();
     } else {
+      //download ffmpeg from cache or site
       let platform = ffbinaries.detectPlatform();
       this.$modal.show("ffmpegDownload");
       ffbinaries.downloadFiles(
