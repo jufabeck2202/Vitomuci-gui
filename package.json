@@ -81,6 +81,7 @@
     "ora": "^2.1.0",
     "popper.js": "^1.14.4",
     "remote": "^0.2.6",
+    "sanitize-filename": "^1.6.1",
     "upath": "^1.1.0",
     "vue": "^2.5.16",
     "vue-analytics": "^5.16.0",
