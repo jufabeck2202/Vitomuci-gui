@@ -88,137 +88,137 @@
 </template>
 
 <script>
-import FileDropdown from "./LandingPage/FileDropdown";
-import Videos from "@/services/videos";
-import Url from "@/services/url";
-import Download from "@/services/download";
-import Split from "@/services/split";
-const { app } = require("electron").remote;
+import FileDropdown from './LandingPage/FileDropdown'
+import Videos from '@/services/videos'
+import Url from '@/services/url'
+import Download from '@/services/download'
+import Split from '@/services/split'
+const { app } = require('electron').remote
 
-const path = require("upath");
-const ffbinaries = require("ffbinaries");
+const path = require('upath')
+const ffbinaries = require('ffbinaries')
 
 export default {
-  name: "landing-page",
-  beforeRouteEnter(to, from, next) {
-    Download.clear();
-    Split.clear();
-    Videos.clear();
-    next();
+  name: 'landing-page',
+  beforeRouteEnter (to, from, next) {
+    Download.clear()
+    Split.clear()
+    Videos.clear()
+    next()
   },
-  data() {
+  data () {
     return {
       url:
-        "https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8",
+        'https://www.youtube.com/playlist?list=PLfpHPxe91z9NEwLMsxfmAehlZnoTzRFB8',
       modal: {
         progress: 0,
         goal: 0
       },
       ffmpegDownloadProgress: 0,
       binariesDownloaded: false
-    };
+    }
   },
-  track() {
-    this.$ga.page("/");
+  track () {
+    this.$ga.page('/')
   },
   components: {
     FileDropdown
   },
-  mounted() {
-    let dest = path.join(app.getPath("userData"), "ff");
-    //check if binaries are found:
-    let binaries = ffbinaries.locateBinariesSync(["ffmpeg", "ffprobe"], {
+  mounted () {
+    let dest = path.join(app.getPath('userData'), 'ff')
+    // check if binaries are found:
+    let binaries = ffbinaries.locateBinariesSync(['ffmpeg', 'ffprobe'], {
       paths: dest
-    });
+    })
     if (
       binaries.ffmpeg.found &&
       binaries.ffprobe.found &&
       binaries.ffmpeg.isExecutable &&
       binaries.ffprobe.isExecutable
     ) {
-      this.binariesDownloaded = true;
-      this.setFfPath();
+      this.binariesDownloaded = true
+      this.setFfPath()
     } else {
-      //download ffmpeg from cache or site
-      let platform = ffbinaries.detectPlatform();
-      this.$modal.show("ffmpegDownload");
+      // download ffmpeg from cache or site
+      let platform = ffbinaries.detectPlatform()
+      this.$modal.show('ffmpegDownload')
       ffbinaries.downloadFiles(
-        ["ffmpeg", "ffprobe"],
+        ['ffmpeg', 'ffprobe'],
         {
           platform: platform,
           quiet: false,
           destination: dest,
           tickerFn: this.ffbinariesProgress
         },
-        (err, data) =>{
-          this.setFfPath();
-          this.$modal.hide("ffmpegDownload");
+        (err, data) => {
+          this.setFfPath()
+          this.$modal.hide('ffmpegDownload')
         }
-      );
+      )
     }
   },
   methods: {
-    searchUrl() {
+    searchUrl () {
       // initialize progress modal
-      this.$modal.show("progress");
+      this.$modal.show('progress')
       Url.getContent(this.url, this.modal).then(episodes => {
         if (episodes === undefined || episodes.length === 0) {
-          new Notification("Wrong url format", {
-            body: "Please, insert youtube or podcast url"
-          });
-          return;
+          new Notification('Wrong url format', {
+            body: 'Please, insert youtube or podcast url'
+          })
+          return
         }
         // start download
         // switch to download screen
-        Download.set(episodes);
-        this.$router.push("download");
-      });
+        Download.set(episodes)
+        this.$router.push('download')
+      })
     },
-    setFfPath() {
-      let platform = ffbinaries.detectPlatform();
-      let dest = path.join(app.getPath("userData"), "ff");
+    setFfPath () {
+      let platform = ffbinaries.detectPlatform()
+      let dest = path.join(app.getPath('userData'), 'ff')
       let ffmpegPath = path.join(
         dest,
-        ffbinaries.getBinaryFilename("ffmpeg", platform)
-      );
+        ffbinaries.getBinaryFilename('ffmpeg', platform)
+      )
       let ffprobePath = path.join(
         dest,
-        ffbinaries.getBinaryFilename("ffprobe", platform)
-      );
-      Split.checkffmpeg(ffmpegPath, ffprobePath);
+        ffbinaries.getBinaryFilename('ffprobe', platform)
+      )
+      Split.checkffmpeg(ffmpegPath, ffprobePath)
     },
-    handleFileChange(e) {
+    handleFileChange (e) {
       // Whenever the file changes, emit the 'input' event with the file data.
-      this.verifyFiles(e.target.files);
+      this.verifyFiles(e.target.files)
     },
-    verifyFiles(newFiles) {
+    verifyFiles (newFiles) {
       // initialize progress modal
-      this.modal.goal = newFiles.length;
-      this.$modal.show("progress");
+      this.modal.goal = newFiles.length
+      this.$modal.show('progress')
       Videos.getFiles(newFiles, this.modal).then(files => {
         if (
-          files == "undefined" ||
+          files == 'undefined' ||
           !files.length ||
-          files.length === "undefined"
+          files.length === 'undefined'
         ) {
-          this.$modal.hide("progress");
-          new Notification("Wrong format", {
-            body: "Please, drop a video(s)",
+          this.$modal.hide('progress')
+          new Notification('Wrong format', {
+            body: 'Please, drop a video(s)',
             // TODO: fix icon path
-            icon: path.join(__dirname, "/dist/imgs/logo--assets.png")
-          });
-          return;
+            icon: path.join(__dirname, '/dist/imgs/logo--assets.png')
+          })
+          return
         }
-        Videos.set(files);
-        this.$router.push("videos");
-      });
+        Videos.set(files)
+        this.$router.push('videos')
+      })
     },
-    ffbinariesProgress(data) {
-      console.log("Downloading " + (data.progress * 100).toFixed(1));
-      this.ffmpegDownloadProgress = data.progress;
+    ffbinariesProgress (data) {
+      console.log('Downloading ' + (data.progress * 100).toFixed(1))
+      this.ffmpegDownloadProgress = data.progress
     }
   }
-};
+}
 </script>
 
 <style>
