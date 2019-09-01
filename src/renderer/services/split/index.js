@@ -2,7 +2,7 @@ const path = require('upath')
 const fs = require('fs')
 const ffprobe = require('./../node-ffprobe')
 const ffmpeg = require('fluent-ffmpeg')
-const sanitize = require("sanitize-filename")
+const sanitize = require('sanitize-filename')
 
 let ffmetadata
 let options
@@ -12,7 +12,6 @@ let coverPath = ''
 let modal
 
 async function split (files, optionsObj, outputPath, progressObj) {
-
   options = optionsObj
   modal = progressObj
   // convert spring to seconds
@@ -96,7 +95,6 @@ async function splitTrack (outputDirectory, file, duration) {
   modal.info = `converting ${file.name}`
   // if you dont want seprate clips
   if (options.full) {
-
     let audioPath = path.join(outputDirectory, sanitize(file.name) + '.mp3')
     await segmentMp3(file.path, audioPath, 0, duration)
     clips.push({
@@ -109,7 +107,7 @@ async function splitTrack (outputDirectory, file, duration) {
 
   let durationIndex = options.startAt
   let parts = 0
-  //TODO replace getSegmentname to do only once, not 3 time. Only sanitize name if needed.
+  // TODO replace getSegmentname to do only once, not 3 time. Only sanitize name if needed.
   while ((durationIndex + options.duration) <= (duration - options.endAt)) {
     modal.info = `converting ${file.name} splitting into ${parts} parts`
     await segmentMp3(file.path, path.join(outputDirectory, getSegmentName(file.name, durationIndex, durationIndex + options.duration)), durationIndex, options.duration)
