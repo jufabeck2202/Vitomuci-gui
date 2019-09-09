@@ -50,10 +50,12 @@
               </div>
             </div>
           </div>
-          <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
         </div>
       </div>
+    <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
+
     </main>
+    
     <modal name="progress" height="auto" :clickToClose="false" :adaptive="true">
       <div class="box">
         <h4>Scanning files...</h4>
