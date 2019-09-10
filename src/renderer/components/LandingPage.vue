@@ -53,7 +53,6 @@
         </div>
       </div>
     <file-dropdown v-bind:dropFiles="verifyFiles"></file-dropdown>
-
     </main>
     
     <modal name="progress" height="auto" :clickToClose="false" :adaptive="true">
