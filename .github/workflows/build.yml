@@ -2,7 +2,7 @@ name: Build
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - uses: actions/checkout@master
     - name: Use Node.js 10.x
